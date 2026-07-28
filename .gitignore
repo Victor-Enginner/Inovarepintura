@@ -1,0 +1,20 @@
+# Pacote de origem (já extraído para a raiz; mantido localmente, não versionado)
+Inovare-Pintura-Claude-Code-Production-Package.zip
+Inovare-Pintura-Prompt-Mestre-Claude.md
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Editor / OS
+.DS_Store
+*.log
+.vscode/

@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "title": "Inovare Pintura | Pintura e Remodelação em Olhão",
+    "description": "Pintura interior e exterior, reparações, pladur, canalização, remodelação e isolamento térmico em Olhão. Veja trabalhos reais e peça o seu orçamento."
+  },
+  "navigation": [
+    {
+      "label": "Serviços",
+      "href": "#servicos"
+    },
+    {
+      "label": "Trabalhos",
+      "href": "#trabalhos"
+    },
+    {
+      "label": "Processo",
+      "href": "#processo"
+    },
+    {
+      "label": "Contactos",
+      "href": "#contactos"
+    }
+  ],
+  "intro": [
+    "Antes da cor, há uma história.",
+    "Preparar é onde começa o acabamento.",
+    "Cada detalhe conta.",
+    "A transformação torna-se visível.",
+    "Inovare Pintura."
+  ],
+  "hero": {
+    "eyebrow": "Pintura, reparação e remodelação em Olhão",
+    "headline": "Transformamos espaços. Protegemos o que é seu.",
+    "body": "Pintura interior e exterior, reparações, pladur, canalização, remodelação e isolamento térmico — com preparação rigorosa, acabamento cuidado e acompanhamento próximo.",
+    "primaryCta": "Pedir orçamento",
+    "secondaryCta": "Ver trabalhos",
+    "proof": [
+      "Trabalho real",
+      "Contacto direto",
+      "Soluções para interior e exterior"
+    ]
+  },
+  "servicesIntro": {
+    "headline": "Antes da cor, vem o cuidado.",
+    "body": "Um bom resultado começa na avaliação da superfície, na proteção do espaço e na preparação certa. Tratamos cada etapa para que o acabamento seja bonito, uniforme e duradouro."
+  },
+  "gallery": {
+    "eyebrow": "Portefólio",
+    "headline": "Trabalho real. Resultado visível.",
+    "body": "Exteriores, interiores, coberturas e remodelações executados pela Inovare Pintura.",
+    "filters": [
+      "Todos",
+      "Exteriores",
+      "Interiores",
+      "Coberturas",
+      "Remodelação"
+    ]
+  },
+  "featuredCase": {
+    "eyebrow": "Antes, durante e depois",
+    "headline": "Uma fachada renovada começa muito antes da última demão.",
+    "body": "Preparação da superfície, trabalho em altura e acabamento em ocre com molduras claras. Uma transformação construída por etapas e registada numa obra real."
+  },
+  "finalCta": {
+    "headline": "A sua casa merece um acabamento à altura.",
+    "body": "Fale diretamente com a Inovare Pintura, explique o trabalho e combine a melhor forma de o avaliarmos.",
+    "primaryCta": "Pedir orçamento",
+    "telephoneCta": "Ligar: +351 913 411 051"
+  }
+}

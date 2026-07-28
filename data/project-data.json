@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "brand": {
+    "name": "Inovare Pintura",
+    "language": "pt-PT",
+    "country": "PT",
+    "tagline": "Transformamos espaços. Protegemos o que é seu."
+  },
+  "contact": {
+    "phoneDisplay": "+351 913 411 051",
+    "phoneE164": "+351913411051",
+    "telephoneUrl": "tel:+351913411051",
+    "whatsappUrl": "https://wa.me/351913411051",
+    "whatsappNeedsConfirmation": true,
+    "email": "renovarepintura192619@gmail.com",
+    "emailUrl": "mailto:renovarepintura192619@gmail.com",
+    "emailNeedsConfirmation": true,
+    "instagramHandle": "@inovarepintura",
+    "instagramUrl": "https://instagram.com/inovarepintura",
+    "instagramNeedsConfirmation": true
+  },
+  "address": {
+    "streetAddress": "Rua do Pinheiro n.º 30",
+    "postalCode": "8700-434",
+    "addressLocality": "Olhão",
+    "addressRegion": "Faro",
+    "addressCountry": "PT",
+    "display": "Rua do Pinheiro n.º 30, 8700-434 Olhão, Faro, Portugal",
+    "confirmed": true
+  },
+  "services": [
+    "Pintura interior e exterior",
+    "Reparações",
+    "Remodelação",
+    "Pladur",
+    "Canalização",
+    "Isolamento térmico"
+  ],
+  "serviceArea": {
+    "confirmed": [
+      "Olhão"
+    ],
+    "needsConfirmation": [
+      "restante Algarve"
+    ]
+  },
+  "referenceSite": {
+    "url": "https://tranquilin-site1.netlify.app/",
+    "usage": "engineering and narrative reference only",
+    "directAuditRequired": true
+  },
+  "featureFlags": {
+    "fluidCursor": false,
+    "contactForm": false,
+    "introVideoFallback": false,
+    "beforeAfterPairsRequireConfirmation": true
+  }
+}

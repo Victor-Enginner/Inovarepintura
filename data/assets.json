@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "generated": [
+    {
+      "id": "gen-hero-final",
+      "src": "assets/generated/01-hero-institucional-final.png",
+      "role": "cinematic-result",
+      "provenance": "generated"
+    },
+    {
+      "id": "gen-intro-before",
+      "src": "assets/generated/02-scroll-frame-inicial-antes.png",
+      "role": "cinematic-frame",
+      "provenance": "generated"
+    },
+    {
+      "id": "gen-intro-process",
+      "src": "assets/generated/03-scroll-frame-pintura-em-andamento.png",
+      "role": "cinematic-frame",
+      "provenance": "generated"
+    },
+    {
+      "id": "gen-intro-finish",
+      "src": "assets/generated/04-scroll-frame-acabamento-quase-concluido.png",
+      "role": "cinematic-frame",
+      "provenance": "generated"
+    },
+    {
+      "id": "gen-intro-technical",
+      "src": "assets/generated/05-execucao-tecnica-pintura.png",
+      "role": "cinematic-frame",
+      "provenance": "generated"
+    },
+    {
+      "id": "gen-splash",
+      "src": "assets/generated/06-splash-transicao-marca.png",
+      "role": "transition",
+      "provenance": "generated"
+    },
+    {
+      "id": "gen-preview-video",
+      "src": "assets/generated/inovare-cutscene-abertura-v1.mp4",
+      "role": "creative-preview",
+      "provenance": "generated"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "real-001",
+      "src": "assets/gallery/01-edificio-residencial-pintura-exterior.jpg",
+      "category": "exteriores",
+      "stage": "resultado",
+      "title": "Pintura exterior de edifício residencial",
+      "alt": "Fachada branca de edifício residencial após pintura exterior.",
+      "provenance": "real"
+    },
+    {
+      "id": "real-002",
+      "src": "assets/gallery/02-cobertura-estado-inicial.jpg",
+      "category": "coberturas",
+      "stage": "antes",
+      "title": "Cobertura antes da intervenção",
+      "alt": "Cobertura de edifício antes da limpeza e intervenção.",
+      "provenance": "real"
+    },
+    {
+      "id": "real-003",
+      "src": "assets/gallery/03-moradia-preparacao-exterior.jpg",
+      "category": "exteriores",
+      "stage": "durante",
+      "title": "Preparação exterior de moradia",
+      "alt": "Moradia branca durante preparação de pintura exterior.",
+      "provenance": "real"
+    },
+    {
+      "id": "real-004",
+      "src": "assets/gallery/04-moradia-acabamento-final.jpg",
+      "category": "exteriores",
+      "stage": "resultado",
+      "title": "Acabamento exterior de moradia",
+      "alt": "Moradia com fachada clara após acabamento exterior.",
+      "provenance": "real"
+    },
+    {
+      "id": "real-005",
+      "src": "assets/gallery/05-edificio-trabalho-em-altura.jpg",
+      "category": "exteriores",
+      "stage": "durante",
+      "title": "Pintura exterior com acesso em altura",
+      "alt": "Trabalho de pintura em altura num edifício residencial.",
+      "provenance": "real",
+      "personVisible": true,
+      "publicationNeedsConsent": true
+    },
+    {
+      "id": "real-006",
+      "src": "assets/gallery/06-terraco-impermeabilizacao-final.jpg",
+      "category": "coberturas",
+      "stage": "resultado",
+      "title": "Terraço após renovação",
+      "alt": "Terraço com pavimento renovado e paredes brancas.",
+      "provenance": "real",
+      "pairId": "terraco-01",
+      "pairNeedsConfirmation": true
+    },
+    {
+      "id": "real-007",
+      "src": "assets/gallery/07-terraco-estado-inicial.jpg",
+      "category": "coberturas",
+      "stage": "antes",
+      "title": "Terraço antes da renovação",
+      "alt": "Terraço antes da limpeza e renovação do pavimento.",
+      "provenance": "real",
+      "pairId": "terraco-01",
+      "pairNeedsConfirmation": true
+    },
+    {
+      "id": "real-008",
+      "src": "assets/gallery/08-interior-resultado-final.jpg",
+      "category": "interiores",
+      "stage": "resultado",
+      "title": "Acabamento interior em branco e grafite",
+      "alt": "Sala com acabamento interior em branco e grafite.",
+      "provenance": "real",
+      "pairId": "interior-01",
+      "pairNeedsConfirmation": true
+    },
+    {
+      "id": "real-009",
+      "src": "assets/gallery/09-interior-durante-execucao.jpg",
+      "category": "interiores",
+      "stage": "durante",
+      "title": "Proteção do espaço durante pintura interior",
+      "alt": "Sala protegida durante trabalho de pintura interior.",
+      "provenance": "real",
+      "pairId": "interior-01",
+      "pairNeedsConfirmation": true
+    },
+    {
+      "id": "real-010",
+      "src": "assets/gallery/10-moradia-primer-com-andaime.jpg",
+      "category": "exteriores",
+      "stage": "durante",
+      "title": "Preparação de fachada com andaime",
+      "alt": "Moradia com andaime durante preparação da fachada.",
+      "provenance": "real",
+      "pairId": "moradia-ocre-01",
+      "pairNeedsConfirmation": true
+    },
+    {
+      "id": "real-011",
+      "src": "assets/gallery/11-moradia-final-ocre.jpg",
+      "category": "exteriores",
+      "stage": "resultado",
+      "title": "Fachada com acabamento ocre",
+      "alt": "Moradia com acabamento ocre e molduras claras.",
+      "provenance": "real",
+      "pairId": "moradia-ocre-01",
+      "pairNeedsConfirmation": true
+    }
+  ]
+}
