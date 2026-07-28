@@ -39,12 +39,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'pt_PT',
+    url: '/',
     siteName: site.name,
     title: 'Inovare Pintura | Pintura e Remodelação em Olhão',
     description:
       'Pintura interior e exterior, reparações, pladur, canalização, ' +
       'remodelação e isolamento térmico em Olhão.',
+    /* Fotografia real de um trabalho executado — é esta a imagem que
+     * representa a empresa quando alguém partilha o link no WhatsApp, que é
+     * o canal principal deste negócio. Sem ela aparece um retângulo cinzento. */
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Moradia com fachada clara após acabamento exterior, em Olhão.',
+      },
+    ],
   },
+  twitter: { card: 'summary_large_image' },
 };
 
 export default function RootLayout({ children }: { readonly children: React.ReactNode }) {

@@ -33,3 +33,6 @@ dist/
 # Artefactos de teste (Playwright)
 /test-results/
 /playwright-report/
+
+# Local Netlify folder
+.netlify

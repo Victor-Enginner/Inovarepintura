@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /tmp/d.html -w '%{http_code}' -L https://6a6897684a925f514049ea4c--inovare-pintura.netlify.app)"
+    ]
+  }
+}
