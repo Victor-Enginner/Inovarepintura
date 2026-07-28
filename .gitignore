@@ -26,3 +26,6 @@ dist/
 # Next.js
 /.next/
 /next-env.d.ts
+
+# Cache do TypeScript
+*.tsbuildinfo
