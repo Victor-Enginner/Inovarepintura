@@ -3,6 +3,9 @@ import { Fraunces, Manrope } from 'next/font/google';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { site } from '@/content/site';
+import { StickyContact } from '@/components/layout/StickyContact';
+import { AnalyticsListener } from '@/lib/analytics';
+import { localBusinessJsonLd } from '@/lib/structured-data';
 import './globals.css';
 
 /* Duas famílias, o máximo do §7. `next/font` descarrega-as no build e
@@ -54,7 +57,17 @@ export default function RootLayout({ children }: { readonly children: React.Reac
         </a>
         <SiteHeader />
         <main id="conteudo">{children}</main>
+        <StickyContact />
         <SiteFooter />
+        <AnalyticsListener />
+        <script
+          type="application/ld+json"
+          // Conteúdo próprio e estático, construído a partir de dados
+          // confirmados — não há input de utilizador para sanitizar.
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessJsonLd(siteUrl)),
+          }}
+        />
       </body>
     </html>
   );

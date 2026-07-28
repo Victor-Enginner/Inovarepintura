@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "assets:cutscene": "./scripts/build-cutscene-assets.sh"
+    "assets:cutscene": "./scripts/build-cutscene-assets.sh",
+    "assets:gallery": "node scripts/build-gallery-assets.mjs"
   },
   "dependencies": {
     "next": "^16.2.12",

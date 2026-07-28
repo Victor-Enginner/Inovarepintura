@@ -1,0 +1,57 @@
+[
+  {
+    "base": "01-edificio-residencial-pintura-exterior",
+    "width": 864,
+    "height": 1536
+  },
+  {
+    "base": "02-cobertura-estado-inicial",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "03-moradia-preparacao-exterior",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "04-moradia-acabamento-final",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "05-edificio-trabalho-em-altura",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "06-terraco-impermeabilizacao-final",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "07-terraco-estado-inicial",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "08-interior-resultado-final",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "09-interior-durante-execucao",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "10-moradia-primer-com-andaime",
+    "width": 1152,
+    "height": 1536
+  },
+  {
+    "base": "11-moradia-final-ocre",
+    "width": 1152,
+    "height": 1536
+  }
+]

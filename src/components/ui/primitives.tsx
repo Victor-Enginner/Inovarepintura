@@ -27,11 +27,15 @@ export function Container({
 export function Section({
   id,
   labelledBy,
+  tabIndex,
   className,
   children,
 }: {
   readonly id?: string;
   readonly labelledBy?: string;
+  /** -1 torna a secção alvo programático de foco (usado por "saltar
+   * introdução", que tem de mover o foco e não apenas a página). */
+  readonly tabIndex?: number;
   readonly className?: string;
   readonly children: ReactNode;
 }) {
@@ -39,6 +43,7 @@ export function Section({
     <section
       {...(id !== undefined ? { id } : {})}
       {...(labelledBy !== undefined ? { 'aria-labelledby': labelledBy } : {})}
+      {...(tabIndex !== undefined ? { tabIndex } : {})}
       className={cn('py-(--spacing-section)', className)}
     >
       {children}

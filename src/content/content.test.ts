@@ -77,7 +77,7 @@ describe('consentimento e publicação', () => {
   it('mantém os três pares por confirmar (CLIENT-05)', () => {
     /* Enquanto o cliente não confirmar que cada par é a mesma intervenção,
      * nenhum slider pode ser rotulado "antes/depois". */
-    expect(pairsAwaitingConfirmation().sort()).toEqual([
+    expect([...pairsAwaitingConfirmation()].sort()).toEqual([
       'interior-01',
       'moradia-ocre-01',
       'terraco-01',

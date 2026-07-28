@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import { CinematicIntro } from '@/components/cinematic/CinematicIntro';
+import { RealWorkGallery } from '@/components/gallery/RealWorkGallery';
 import { LinkButton } from '@/components/ui/Button';
 import {
   Container,
@@ -13,6 +15,11 @@ import {
   processSteps,
   services,
 } from '@/content/site';
+import {
+  galleryFilters,
+  populatedCategories,
+  publishableImages,
+} from '@/content/gallery';
 
 /* A ordem das secções segue o CLAUDE.md §5. CinematicIntro e PaintReveal
  * entram na Sprint 2 (ADR-006); RealWorkGallery e FeaturedBeforeAfter na
@@ -20,7 +27,7 @@ import {
 
 function PrimaryHero() {
   return (
-    <Section className="pt-12">
+    <Section id="hero" tabIndex={-1} className="pt-12 outline-none">
       <Container className="grid items-center gap-12 lg:grid-cols-2">
         <div>
           <Eyebrow>Pintura, reparação e remodelação em Olhão</Eyebrow>
@@ -149,9 +156,14 @@ function Process() {
   );
 }
 
-function GalleryPlaceholder() {
-  /* Âncora real para a navegação. A galeria com filtros e lightbox é a
-   * Sprint 4 (ADR-003); o conteúdo abaixo não afirma nada que não seja certo. */
+function RealWork() {
+  /* Só mostramos filtros que devolvem alguma coisa. "Remodelação" é exigida
+   * pela especificação mas não tem fotos reais (CLIENT-07): oferecê-la daria
+   * ao visitante um beco sem saída. Volta sozinha quando houver fotos. */
+  const filters = galleryFilters.filter(
+    (f) => f.id === 'todos' || populatedCategories.has(f.id),
+  );
+
   return (
     <Section id="trabalhos" labelledBy="trabalhos-titulo">
       <Container>
@@ -160,9 +172,12 @@ function GalleryPlaceholder() {
           Trabalho real. Resultado visível.
         </Heading>
         <Prose className="mt-6">
-          Exteriores, interiores, coberturas e remodelações executados pela Inovare
-          Pintura.
+          Exteriores, interiores e coberturas executados pela Inovare Pintura.
         </Prose>
+
+        <div className="mt-12">
+          <RealWorkGallery images={publishableImages} filters={filters} />
+        </div>
       </Container>
     </Section>
   );
@@ -212,11 +227,12 @@ function FinalCta() {
 export default function HomePage() {
   return (
     <>
+      <CinematicIntro />
       <PrimaryHero />
       <ProofStrip />
       <Services />
       <Process />
-      <GalleryPlaceholder />
+      <RealWork />
       <ServiceArea />
       <FinalCta />
     </>
