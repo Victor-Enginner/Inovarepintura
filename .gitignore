@@ -25,3 +25,7 @@ dist/
 .DS_Store
 *.log
 .vscode/
+
+# Next.js
+/.next/
+/next-env.d.ts

@@ -1,0 +1,100 @@
+@import 'tailwindcss';
+@import '../styles/tokens.css';
+
+/* ── Base ──────────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Sem scroll-behavior: smooth global — competiria com a timeline da
+   * cutscene (ADR-006) e é desagradável com reduced motion. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  text-wrap: balance;
+  margin: 0;
+}
+
+p {
+  text-wrap: pretty;
+  margin: 0;
+}
+
+img,
+picture,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Foco ──────────────────────────────────────────────────────────────
+ * Visível sempre, nunca escondido (§14). O anel escuro passa 3.0 em
+ * superfícies claras; em superfícies escuras a classe .on-dark inverte-o.
+ */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.on-dark :focus-visible {
+  outline-color: var(--color-focus-inverse);
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────
+ * §14. Não removemos transições de foco (prejudicaria a legibilidade do
+ * estado), apenas colapsamos a duração de animações decorativas.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Skip link ─────────────────────────────────────────────────────────
+ * Fora do ecrã até receber foco. Nunca display:none — isso removê-lo-ia
+ * da ordem de tabulação.
+ */
+.skip-link {
+  position: absolute;
+  left: var(--spacing-gutter);
+  top: 0;
+  z-index: var(--z-skip-link);
+  transform: translateY(-120%);
+  background-color: var(--color-navy-900);
+  color: var(--color-text-inverse);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  text-decoration: none;
+  transition: transform var(--duration-fast) var(--ease-out-soft);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}

@@ -16,23 +16,22 @@
 
 ## Stack detetada
 
-- Framework: nenhum ainda — greenfield. Regra aplicável: Next.js App Router.
-- Package manager: npm (Node v24.18.0 / npm 11.16.0 disponíveis no ambiente;
-  pnpm 11.15.0 também disponível mas não escolhido, para bater certo com os
-  comandos já documentados em `docs/05-TECHNICAL-ARCHITECTURE.md`).
+- Framework: Next.js 16.2.12 (App Router, Turbopack) + React 19.2.8.
+- Package manager: npm 11.16.0 (lockfile `package-lock.json` versionado).
 - Runtime: Node v24.18.0.
-- Styling: Tailwind CSS (a instalar).
-- Motion: GSAP + ScrollTrigger para a cutscene; sem outra lib de motion até
-  haver justificação.
-- Testing: a definir na Sprint 1 (S1-T01).
+- Styling: Tailwind CSS 4.3.3 (config CSS-first via `@theme`).
+- Motion: nenhum instalado ainda. GSAP + ScrollTrigger entram na Sprint 2,
+  com import dinâmico obrigatório (ver Métricas).
+- Testing: Vitest 4.1.10 + Testing Library, ambiente jsdom.
+- Lint/format: ESLint 9.39.5 (`eslint-config-next` flat) + Prettier 3.9.6.
+- Imagem: `sharp` 0.34.5 (libvips 8.17.3), aprovado e compilado.
 - Deploy: Netlify (preparado; sem conta/credenciais fornecidas ainda).
 
 ## Sprint ativo
 
-- Sprint: 0 — Descoberta e baseline
-- Objetivo: compreender o pacote, organizar o repositório e produzir o
-  diagnóstico/plano antes de qualquer código de produção.
-- Estado: DONE — pronto para gate de entrada na Sprint 1
+- Sprint: 1 — Fundação e design system
+- Objetivo: base tipada, acessível e consistente.
+- Estado: DONE — pronto para gate de entrada na Sprint 2 (cutscene, ADR-006)
 
 ## Tarefas
 
@@ -43,6 +42,29 @@
 | S0-T03 | DONE | Contactos cruzados com `docs/00` e `CLAUDE.md` §10 | Todos batem certo; ver inconsistência do Instagram em Bloqueios |
 | S0-T04 | DONE | `docs/decisions/ADR-001..005` | 5 ADRs registados: stack, cutscene, galeria, imagem, analytics |
 | S0-T05 | DONE | Secção "Verificações" abaixo | N/A para build/bundle/Lighthouse — greenfield, sem `package.json` ainda; baseline real só existe depois do S1-T01 |
+| S1-T01 | DONE | `npm run lint/typecheck/test/build` todos limpos | TS strict + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`; alias `@/*` |
+| S1-T02 | DONE | `src/styles/tokens.css`; contrastes calculados (ver abaixo) | Paleta base falhava AA com texto; derivadas `-700` acessíveis |
+| S1-T03 | DONE | `src/components/ui/`, 8 testes de componente | Alvos touch 44 px; `rel` automático em links externos |
+| S1-T04 | DONE | `src/content/`, 12 testes de conteúdo | Contactos e galeria derivados do JSON, sem strings duplicadas |
+| S1-T05 | DONE | HTML servido verificado (ver Verificações) | Skip link, landmarks, 10 secções nomeadas, árvore h1→h2→h3 sem saltos |
+
+## Contrastes verificados (S1-T02)
+
+Calculados, não estimados. A paleta de `docs/02` **falha AA quando carrega
+texto**, e por isso foram derivadas variantes — o `CLAUDE.md` §7 autoriza
+refinar mantendo a relação navy + turquesa + cobre.
+
+| Par | Rácio | Veredito |
+|---|---:|---|
+| branco / `teal-500` `#12A8A5` | 2,93 | ✗ falha — **não usar para texto** |
+| branco / `copper-500` `#C77A32` | 3,36 | ✗ falha em texto normal |
+| branco / `teal-700` `#0D7C7A` | 5,02 | AA ✓ (variante derivada) |
+| branco / `copper-700` `#9E6128` | 5,01 | AA ✓ (variante derivada) |
+| `navy-900` / `mineral-50` | 14,18 | AA ✓ |
+| `graphite-900` / `mineral-50` | 15,87 | AA ✓ |
+| `text-muted` `#4A5259` / `mineral-50` | 7,68 | AA ✓ |
+| `teal-500` / `mineral-50` | 2,66 | ✗ — abaixo dos 3,0 da SC 1.4.11, **logo não serve como anel de foco em fundo claro** |
+| `teal-500` / `navy-900` | 5,32 | ✓ — serve como foco em fundo escuro |
 
 ## Inventário de assets (S0-T02)
 
@@ -105,23 +127,48 @@ cartão de visita) — só para reconstrução vetorial, não são ficheiros fin
 | `ffmpeg -lavfi ssim` CRF 27/29/31 | 0,9806 / 0,9748 / 0,9687 | 2026-07-28 |
 | `scripts/build-cutscene-assets.sh` | OK — 9,9 MB de derivados | 2026-07-28 |
 | Verificação visual dos posters | resultado = ocre limpo, sem splash | 2026-07-28 |
+| `npm run lint` | 0 erros, 0 avisos | 2026-07-28 |
+| `npm run typecheck` | 0 erros (TS strict) | 2026-07-28 |
+| `npm run test` | 20 testes, 20 passam | 2026-07-28 |
+| `npm run build` | OK — 2 rotas estáticas prerenderizadas | 2026-07-28 |
+| `next start` + HTML servido | HTTP 200; skip link, `<main>`, `<header>`, `<footer>`, nav nomeada | 2026-07-28 |
+| Árvore de headings no HTML | h1→h2→h3, sem saltos | 2026-07-28 |
+| Frases proibidas (docs/04) | nenhuma das 6 presente | 2026-07-28 |
+| Tokens compilados no CSS | todos presentes; utilitários `(--var)` resolvidos | 2026-07-28 |
 
 ## Orçamento de assets da cutscene (ADR-006)
 
 | Caminho | Payload | Orçamento |
 |---|---:|---|
-| `assets/cutscene/desktop/` | 7,5 MB | fora do caminho crítico; carregado após LCP |
-| `assets/cutscene/mobile/` | 940 KB | 24 frames WebP 720px |
-| `assets/cutscene/poster/` | 1,6 MB | maior ficheiro 229 KB ≤ 250 KB (§15) |
+| `public/cutscene/desktop/` | 7,5 MB | fora do caminho crítico; carregado após LCP |
+| `public/cutscene/mobile/` | 940 KB | 24 frames WebP 720px |
+| `public/cutscene/poster/` | 1,6 MB | maior ficheiro 229 KB ≤ 250 KB (§15) |
 
 ## Métricas
 
 | Métrica | Baseline | Atual | Meta |
 |---|---:|---:|---:|
-| LCP | — (sem app ainda) | — | ≤ 2,5 s |
+| LCP | — (falta medir em browser) | — | ≤ 2,5 s |
 | CLS | — | — | ≤ 0,10 |
 | INP | — | — | ≤ 200 ms |
-| JS inicial home (gzip) | — | — | ≤ 180 KB |
+| JS inicial home (gzip) | 186,3 KB | 186,3 KB | ≤ 180 KB |
+| CSS (gzip) | 5,3 KB | 5,3 KB | — |
+| HTML servido | 42,3 KB | 42,3 KB | — |
+
+### Nota sobre o orçamento de JS
+
+186,3 KB medidos nos 8 scripts que a home pede. **A home não tem um único
+componente client** — é tudo server component, logo o código da aplicação
+contribui ~0 KB. O valor é o piso do framework (React + runtime do Next 16).
+
+O §15 orça "≤ 180 KB gzip, excluindo framework quando a ferramenta reportar
+separadamente"; aqui a ferramenta não separa, por isso o número aparece
+acima do limite. Fica registado como **exceção documentada**, não como
+orçamento cumprido, e é item da Sprint 7 (`S7-T02`).
+
+Consequência prática para a Sprint 2: como já se parte do piso, GSAP +
+ScrollTrigger **têm de entrar por import dinâmico**, depois do conteúdo
+crítico. Se forem para o bundle inicial, o orçamento estoura de vez.
 
 ## Bloqueios
 
@@ -141,8 +188,24 @@ cartão de visita) — só para reconstrução vetorial, não são ficheiros fin
 - Ver `docs/13-OPEN-QUESTIONS-CLIENT-VALIDATION.md`.
 - Issues abertas nesta sessão: `docs/decisions/CLIENT-ISSUES.md`.
 
+## Limitações conhecidas do Sprint 1
+
+- **Sem verificação visual.** O ambiente não tem browser headless, por isso o
+  layout foi validado por estrutura HTML e CSS compilado, não por renderização.
+  Inspeção em mobile e desktop reais continua por fazer (ponto 4 do §17).
+- Serviços e Processo estão implementados com a copy aprovada, mas com
+  apresentação simples — a grelha editorial e o motion secundário são a
+  Sprint 3 (`S3-T01`, `S3-T04`).
+- Navegação sem menu hamburger: quatro âncoras que fluem em duas linhas no
+  mobile. Evita um componente client e mantém a navegação funcional sem
+  JavaScript. Reavaliar se o número de itens crescer.
+- `real-005` (trabalhador identificável) está no dataset mas fora da lista
+  publicável, por `publicationNeedsConsent: true`. A galeria mostra 10 de 11
+  fotos até CLIENT-04 ser resolvido.
+
 ## Próxima ação
 
-- Terminar S0-T04 (ADRs) e S0-T05 (baseline formal), depois arrancar a
-  Sprint 1 (S1-T01: scaffold Next.js + TypeScript strict + Tailwind + lint/
-  format/test).
+- Sprint 2 — Cutscene e hero (ADR-006): pipeline de imagens já feito, falta
+  `CinematicIntro` com timeline única e dois renderers, skip acessível,
+  reduced motion, `PaintReveal` e QA da introdução.
+- Restrição herdada: GSAP por import dinâmico (ver nota do orçamento de JS).

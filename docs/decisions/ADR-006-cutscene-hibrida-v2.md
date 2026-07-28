@@ -74,10 +74,10 @@ para manter em sincronia — existe uma narrativa e duas formas de a pintar.
 
 Derivados gerados por `scripts/build-cutscene-assets.sh`:
 
-- desktop: `assets/cutscene/desktop/cutscene-1080p.mp4` — 7,4 MB, CRF 29,
+- desktop: `public/cutscene/desktop/cutscene-1080p.mp4` — 7,4 MB, CRF 29,
   keyframes a 0,200 s confirmados após reencode;
-- mobile: `assets/cutscene/mobile/f01..f24.webp` — 24 frames a 720px, 940 KB;
-- posters: `assets/cutscene/poster/{inicial,resultado}-{768,1280,1920}.{webp,jpg}`,
+- mobile: `public/cutscene/mobile/f01..f24.webp` — 24 frames a 720px, 940 KB;
+- posters: `public/cutscene/poster/{inicial,resultado}-{768,1280,1920}.{webp,jpg}`,
   todos dentro do orçamento LCP de 250 KB (§15).
 
 ## Mapeamento scroll → tempo
@@ -121,4 +121,4 @@ imagem gerada e **nunca** pode aparecer no filtro "Trabalhos realizados"
 
 `ffprobe` sobre master e derivados (56 keyframes @ 0,200 s antes e depois do
 reencode); SSIM medido por `ffmpeg -lavfi ssim`; contact sheets de verificação
-visual dos beats; tamanhos confirmados em `assets/cutscene/`.
+visual dos beats; tamanhos confirmados em `public/cutscene/`.

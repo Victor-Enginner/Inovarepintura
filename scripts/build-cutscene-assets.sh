@@ -11,7 +11,7 @@
 set -euo pipefail
 
 SRC="source-assets/inovare-cutscene-v2-scroll-web.mp4"
-OUT="assets/cutscene"
+OUT="public/cutscene"
 
 [ -f "$SRC" ] || { echo "ERRO: master ausente em $SRC (não é versionado)"; exit 1; }
 

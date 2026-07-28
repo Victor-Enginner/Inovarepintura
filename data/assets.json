@@ -45,14 +45,14 @@
     },
     {
       "id": "cutscene-v2-desktop",
-      "src": "assets/cutscene/desktop/cutscene-1080p.mp4",
+      "src": "public/cutscene/desktop/cutscene-1080p.mp4",
       "role": "cutscene-scrub-desktop",
       "provenance": "generated",
       "notes": "1080p30 CRF29, keyframes 0.200s, 7.4 MB. Ver ADR-006."
     },
     {
       "id": "cutscene-v2-mobile-frames",
-      "src": "assets/cutscene/mobile/f%02d.webp",
+      "src": "public/cutscene/mobile/f%02d.webp",
       "role": "cutscene-frames-mobile",
       "provenance": "generated",
       "frameCount": 24,
@@ -61,14 +61,14 @@
     },
     {
       "id": "cutscene-v2-poster-inicial",
-      "src": "assets/cutscene/poster/inicial-{768,1280,1920}.{webp,jpg}",
+      "src": "public/cutscene/poster/inicial-{768,1280,1920}.{webp,jpg}",
       "role": "poster-inicial",
       "provenance": "generated",
       "notes": "t=0.0s. Candidato a LCP; <=250 KB em todas as larguras."
     },
     {
       "id": "cutscene-v2-poster-resultado",
-      "src": "assets/cutscene/poster/resultado-{768,1280,1920}.{webp,jpg}",
+      "src": "public/cutscene/poster/resultado-{768,1280,1920}.{webp,jpg}",
       "role": "poster-reduced-motion",
       "provenance": "generated",
       "notes": "t=9.0s, resultado ocre limpo ANTES do splash. Mostrado com prefers-reduced-motion."
