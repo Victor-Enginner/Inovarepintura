@@ -60,10 +60,47 @@ const BEATS = [
   { at: 0.84, text: 'Inovare Pintura.' },
 ] as const;
 
-function beatFor(p: number): string {
-  let current: string = BEATS[0].text;
-  for (const beat of BEATS) if (p >= beat.at) current = beat.text;
-  return current;
+/* Cada frase ocupa a fatia de scroll até à seguinte. */
+const BEAT_RANGES = BEATS.map((beat, i) => ({
+  text: beat.text,
+  start: beat.at,
+  end: BEATS[i + 1]?.at ?? 1,
+}));
+
+/* Quanto a frase cresce ao passar pela câmara. O componente original da
+ * OriginKit usava 35, pensado para uma palavra curta num painel isolado; com
+ * frases inteiras sobre fotografia isso é só borrão e trabalho de composição
+ * a mais. 9 dá a mesma sensação de rasgo sem custar frames. */
+const MAX_SCALE = 9;
+
+/* Túnel de zoom guiado pelo scroll, não por temporizador.
+ *
+ * É a diferença face ao Infinite Text Passage: ali um `setTimeout` trocava as
+ * palavras sozinho, o que aqui dessincronizaria o texto da imagem. A fase de
+ * leitura (u entre 0,22 e 0,68) existe para a frase ficar parada e legível
+ * antes de partir.
+ */
+function tunnelStyle(p: number, start: number, end: number): React.CSSProperties {
+  const u = (p - start) / (end - start);
+  if (u < -0.02 || u > 1) return { opacity: 0, visibility: 'hidden' };
+
+  let scale: number;
+  let opacity: number;
+
+  if (u < 0.22) {
+    const k = Math.max(0, u) / 0.22;
+    scale = 0.35 + 0.65 * k;
+    opacity = k;
+  } else if (u < 0.68) {
+    scale = 1;
+    opacity = 1;
+  } else {
+    const k = (u - 0.68) / 0.32;
+    scale = 1 + (MAX_SCALE - 1) * k * k; // acelera a saída
+    opacity = 1 - k;
+  }
+
+  return { opacity, transform: `scale(${scale})`, willChange: 'transform, opacity' };
 }
 
 type Renderer = 'none' | 'frames' | 'video';
@@ -235,16 +272,34 @@ export function CinematicIntro() {
             />
           ))}
 
-        {/* Gradiente para o texto ter contraste sobre qualquer frame. */}
+        {/* Escurece o topo e o fundo o suficiente para o texto branco passar
+         * contraste sobre o céu claro, sem toldar a fachada ao centro. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/20 to-transparent"
+          className="absolute inset-0 bg-gradient-to-b from-navy-900/55 via-transparent to-navy-900/45"
         />
 
-        <div className="absolute inset-x-0 bottom-0 p-(--spacing-gutter) pb-16">
-          <p className="font-display text-2xl text-mineral-50 lg:text-3xl">
-            {renderer === 'none' ? BEATS[4].text : beatFor(progress)}
-          </p>
+        {/* O texto vive no céu, no terço superior: é a zona limpa em todos os
+         * frames, e deixa a fachada — que é o assunto — desobstruída. */}
+        <div className="absolute inset-x-0 top-[22%] flex justify-center px-(--spacing-gutter)">
+          {renderer === 'none' ? (
+            /* Reduced motion: frase final, parada e legível. */
+            <p className="max-w-3xl text-center font-display text-2xl text-mineral-50 lg:text-4xl">
+              {BEATS[4].text}
+            </p>
+          ) : (
+            <div className="relative w-full max-w-3xl">
+              {BEAT_RANGES.map((beat) => (
+                <p
+                  key={beat.text}
+                  style={tunnelStyle(progress, beat.start, beat.end)}
+                  className="absolute inset-x-0 top-0 text-center font-display text-2xl text-mineral-50 drop-shadow-[0_2px_12px_rgba(6,35,74,0.65)] lg:text-4xl"
+                >
+                  {beat.text}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
 
         {tall && (
