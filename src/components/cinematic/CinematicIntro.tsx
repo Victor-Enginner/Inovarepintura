@@ -233,7 +233,7 @@ export function CinematicIntro() {
     >
       <div
         ref={stickyRef}
-        className="sticky top-0 h-[100svh] overflow-hidden bg-navy-900"
+        className="sticky top-0 h-dvh overflow-hidden bg-navy-900"
       >
         {/* Poster: visível sempre por baixo, para nunca haver ecrã vazio
          * enquanto o vídeo ou os frames carregam. */}

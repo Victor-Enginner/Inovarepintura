@@ -1,51 +1,59 @@
 @import 'tailwindcss';
 @import '../styles/tokens.css';
 
-/* ── Base ──────────────────────────────────────────────────────────────── */
+/* ── Base ──────────────────────────────────────────────────────────────
+ * TEM de estar em @layer base. CSS sem camada ganha a qualquer CSS em
+ * camada, independentemente da ordem — e os utilitários do Tailwind vivem
+ * em @layer utilities. Fora da camada, o `height: auto` daqui anulava o
+ * `h-full` de TODAS as imagens do projeto, e a cutscene nunca preenchia o
+ * ecrã no telemóvel.
+ */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-html {
-  /* Sem scroll-behavior: smooth global — competiria com a timeline da
-   * cutscene (ADR-006) e é desagradável com reduced motion. */
-  -webkit-text-size-adjust: 100%;
-}
+  html {
+    /* Sem scroll-behavior: smooth global — competiria com a timeline da
+     * cutscene e é desagradável com reduced motion. */
+    -webkit-text-size-adjust: 100%;
+  }
 
-body {
-  margin: 0;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
+  body {
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
 
-h1,
-h2,
-h3 {
-  font-family: var(--font-display);
-  line-height: 1.1;
-  text-wrap: balance;
-  margin: 0;
-}
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    line-height: 1.1;
+    text-wrap: balance;
+    margin: 0;
+  }
 
-p {
-  text-wrap: pretty;
-  margin: 0;
-}
+  p {
+    text-wrap: pretty;
+    margin: 0;
+  }
 
-img,
-picture,
-video,
-canvas {
-  display: block;
-  max-width: 100%;
-  height: auto;
+  img,
+  picture,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 /* ── Foco ──────────────────────────────────────────────────────────────
