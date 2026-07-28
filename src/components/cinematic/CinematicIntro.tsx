@@ -139,6 +139,7 @@ const serverRenderer = (): Renderer => 'none';
 export function CinematicIntro() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const seekTarget = useRef(0);
   const rafId = useRef<number | null>(null);
 
@@ -161,7 +162,8 @@ export function CinematicIntro() {
       const el = sectionRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const scrollable = rect.height - window.innerHeight;
+      const viewport = stickyRef.current?.offsetHeight ?? window.innerHeight;
+      const scrollable = rect.height - viewport;
       if (scrollable <= 0) return;
       const p = Math.min(1, Math.max(0, -rect.top / scrollable));
       setProgress(p);
@@ -210,9 +212,9 @@ export function CinematicIntro() {
   }, [renderer]);
 
   const skip = useCallback(() => {
-    const main = document.getElementById('conteudo');
+    /* A âncora já leva a página ao hero sozinha; isto só acrescenta o foco,
+     * para quem navega por teclado não ficar preso na introdução. */
     const hero = document.getElementById('hero');
-    (hero ?? main)?.scrollIntoView({ behavior: 'auto', block: 'start' });
     /* Move o foco, não só a página: sem isto o teclado continuaria dentro da
      * introdução depois de a saltar. */
     hero?.focus({ preventScroll: true });
@@ -223,26 +225,33 @@ export function CinematicIntro() {
     Math.round((progressToTime(progress) / DURATION) * (FRAME_COUNT - 1)),
   );
 
-  /* Sem JS ou com reduced motion a secção ocupa um ecrã e mostra o resultado.
-   * A altura alta só existe quando há algo para animar — caso contrário o
-   * visitante rolaria 400vh de imagem parada. */
-  const tall = renderer !== 'none';
-
   return (
     <section
       ref={sectionRef}
       aria-label="Apresentação: a transformação de uma fachada"
-      className={tall ? 'relative h-[260vh] lg:h-[400vh]' : 'relative'}
+      className="relative h-[260svh] motion-reduce:h-[100svh] lg:h-[400svh] lg:motion-reduce:h-[100svh]"
     >
-      <div className="sticky top-0 h-screen overflow-hidden bg-navy-900">
+      <div
+        ref={stickyRef}
+        className="sticky top-0 h-[100svh] overflow-hidden bg-navy-900"
+      >
         {/* Poster: visível sempre por baixo, para nunca haver ecrã vazio
          * enquanto o vídeo ou os frames carregam. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          src="/cutscene/poster/inicial-1280.webp"
+          alt="Fachada de moradia antes do trabalho de pintura exterior."
+          className="absolute inset-0 h-full w-full object-cover motion-reduce:hidden"
+          fetchPriority="high"
+        />
+
+        {/* Com reduced motion não há narrativa: mostra-se o resultado. A troca
+         * é feita por media query para funcionar sem JavaScript. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="/cutscene/poster/resultado-1280.webp"
           alt="Fachada de moradia com acabamento em ocre e molduras claras."
-          className="absolute inset-0 h-full w-full object-cover"
-          fetchPriority="high"
+          className="absolute inset-0 hidden h-full w-full object-cover motion-reduce:block"
         />
 
         {renderer === 'video' && (
@@ -266,7 +275,8 @@ export function CinematicIntro() {
               src={src}
               alt=""
               aria-hidden="true"
-              loading={i < 3 ? 'eager' : 'lazy'}
+              loading="eager"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover"
               style={{ opacity: i === activeFrame ? 1 : 0 }}
             />
@@ -302,8 +312,9 @@ export function CinematicIntro() {
           )}
         </div>
 
-        {tall && (
-          <div className="on-dark absolute right-(--spacing-gutter) top-6 flex items-center gap-4">
+        {/* Sempre presente: em reduced motion a secção é um ecrã só e a
+         * âncora continua a ser a saída natural para o conteúdo. */}
+        <div className="on-dark absolute right-(--spacing-gutter) top-6 flex items-center gap-4">
             <div
               className="hidden h-1 w-24 overflow-hidden rounded-pill bg-mineral-50/30 sm:block"
               role="presentation"
@@ -313,16 +324,15 @@ export function CinematicIntro() {
                 style={{ transform: `scaleX(${progress})`, transformOrigin: 'left' }}
               />
             </div>
-            <button
-              type="button"
+            <a
+              href="#hero"
               onClick={skip}
               data-analytics="intro_skip"
-              className="inline-flex min-h-11 items-center rounded-md border border-mineral-50/40 px-4 text-sm font-semibold text-mineral-50 hover:bg-mineral-50/10"
+              className="inline-flex min-h-11 items-center rounded-md border border-mineral-50/40 px-4 text-sm font-semibold text-mineral-50 no-underline hover:bg-mineral-50/10"
             >
               Saltar introdução
-            </button>
-          </div>
-        )}
+            </a>
+        </div>
       </div>
     </section>
   );
