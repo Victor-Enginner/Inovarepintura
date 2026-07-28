@@ -25,6 +25,7 @@
     "unrs-resolver@1.12.2": true
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.13",
     "@playwright/test": "^1.62.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^7.0.0",
