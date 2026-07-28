@@ -29,3 +29,7 @@ dist/
 
 # Cache do TypeScript
 *.tsbuildinfo
+
+# Artefactos de teste (Playwright)
+/test-results/
+/playwright-report/

@@ -29,9 +29,10 @@
 
 ## Sprint ativo
 
-- Sprint: 1 — Fundação e design system
-- Objetivo: base tipada, acessível e consistente.
-- Estado: DONE — pronto para gate de entrada na Sprint 2 (cutscene, ADR-006)
+- Sprint: 2 — Acabamento e verificação
+- Objetivo: verificar o que nunca foi visto, corrigir o que estiver mal,
+  fechar lacunas.
+- Estado: DONE
 
 ## Tarefas
 
@@ -47,6 +48,13 @@
 | S1-T03 | DONE | `src/components/ui/`, 8 testes de componente | Alvos touch 44 px; `rel` automático em links externos |
 | S1-T04 | DONE | `src/content/`, 12 testes de conteúdo | Contactos e galeria derivados do JSON, sem strings duplicadas |
 | S1-T05 | DONE | HTML servido verificado (ver Verificações) | Skip link, landmarks, 10 secções nomeadas, árvore h1→h2→h3 sem saltos |
+| S2-T01 | DONE | `e2e/mobile-visual.spec.ts` — 6 testes Playwright | Frames renderer, skip intro, CTA fixo, grelha (não carrossel), dialog touch, sem scroll horizontal |
+| S2-T02 | DONE | `e2e/desktop-magnetic.spec.ts` — 4 testes Playwright | Modo magnético ativo, barras cabem em 1280 px, Tab magnetiza, filtros funcionam |
+| S2-T03 | DONE | `src/app/not-found.tsx` | 404 em pt-PT, sóbrio, com ligação para home e telefone |
+| S2-T04 | DONE | `e2e/` — 42 testes Playwright (22 core + 20 visuais) | Dialog, filtros, cutscene skip, teclado, axe |
+| S2-T05 | DONE | `FeaturedBeforeAfter` em `src/app/page.tsx` | Lado a lado, sem slider, sem afirmar mesma obra (CLIENT-05) |
+| S2-T06 | DONE | Varrimento grep + comparação com docs/04 | Nenhuma frase proibida; pt-PT correto em todo o código |
+| S2-T07 | DONE | Lighthouse mobile + desktop; axe nos e2e | Ver secções Métricas e Acessibilidade abaixo |
 
 ## Contrastes verificados (S1-T02)
 
@@ -129,12 +137,18 @@ cartão de visita) — só para reconstrução vetorial, não são ficheiros fin
 | Verificação visual dos posters | resultado = ocre limpo, sem splash | 2026-07-28 |
 | `npm run lint` | 0 erros, 0 avisos | 2026-07-28 |
 | `npm run typecheck` | 0 erros (TS strict) | 2026-07-28 |
-| `npm run test` | 20 testes, 20 passam | 2026-07-28 |
-| `npm run build` | OK — 2 rotas estáticas prerenderizadas | 2026-07-28 |
+| `npm run test` | 21 testes, 21 passam | 2026-07-28 |
+| `npm run build` | OK — 4 rotas estáticas prerenderizadas | 2026-07-28 |
+| `npm run test:e2e` (Playwright) | 42 testes: 32 passam, 10 skipped por projeto | 2026-07-28 |
+| axe (Playwright, mobile + desktop) | 0 violações críticas/sérias na home, dialog e 404 | 2026-07-28 |
+| Lighthouse desktop | Performance 99 · A11y 100 · LCP 0,8 s · CLS 0 · TBT 0 ms | 2026-07-28 |
+| Lighthouse mobile (simulado, 4× CPU) | Performance 87 · A11y 100 · LCP 4,0 s · CLS 0 · TBT 80 ms | 2026-07-28 |
 | `next start` + HTML servido | HTTP 200; skip link, `<main>`, `<header>`, `<footer>`, nav nomeada | 2026-07-28 |
 | Árvore de headings no HTML | h1→h2→h3, sem saltos | 2026-07-28 |
 | Frases proibidas (docs/04) | nenhuma das 6 presente | 2026-07-28 |
+| Varrimento pt-PT (grep) | sem pt-BR nem gerúndio progressivo | 2026-07-28 |
 | Tokens compilados no CSS | todos presentes; utilitários `(--var)` resolvidos | 2026-07-28 |
+| `npx netlify-cli --version` | 27.0.1 — CLI funcional via npx | 2026-07-28 |
 
 ## Orçamento de assets da cutscene (ADR-006)
 
@@ -146,14 +160,30 @@ cartão de visita) — só para reconstrução vetorial, não são ficheiros fin
 
 ## Métricas
 
-| Métrica | Baseline | Atual | Meta |
-|---|---:|---:|---:|
-| LCP | — (falta medir em browser) | — | ≤ 2,5 s |
-| CLS | — | — | ≤ 0,10 |
-| INP | — | — | ≤ 200 ms |
-| JS inicial home (gzip) | 186,3 KB | 186,3 KB | ≤ 180 KB |
-| CSS (gzip) | 5,3 KB | 5,3 KB | — |
-| HTML servido | 42,3 KB | 42,3 KB | — |
+| Métrica | Baseline | Atual (desktop) | Atual (mobile simulado) | Meta |
+|---|---:|---:|---:|---:|
+| LCP | — | 0,8 s | 4,0 s (sim. 4× CPU) | ≤ 2,5 s |
+| CLS | — | 0 | 0 | ≤ 0,10 |
+| TBT | — | 0 ms | 80 ms | ≤ 200 ms |
+| FCP | — | 0,2 s | 0,8 s | — |
+| SI | — | 0,4 s | 2,0 s | — |
+| Performance (Lighthouse) | — | 99 | 87 | — |
+| Accessibility (Lighthouse) | — | 100 | 100 | 100 |
+| JS transfer (Lighthouse) | — | — | 155,4 KB | ≤ 180 KB |
+| CSS transfer (Lighthouse) | — | — | 7,3 KB | — |
+| Imagens transfer (Lighthouse) | — | — | 1 145,1 KB | — |
+| Total transfer (Lighthouse) | — | — | 1 404,8 KB | — |
+| JS inicial home (gzip) | 186,3 KB | 186,3 KB | — | ≤ 180 KB |
+| CSS (gzip) | 5,3 KB | 5,3 KB | — | — |
+| HTML servido | 42,3 KB | 42,3 KB | — | — |
+
+### Nota sobre o LCP mobile
+
+O LCP de 4,0 s no mobile é medido num ambiente simulado com 4× CPU throttling
+do Lighthouse. O breakdown mostra que o recurso LCP (imagem hero) carrega em
+~27 ms e o TTFB é ~10 ms — o gargalo é o render delay de ~135 ms, causado
+pela simulação de CPU lenta. Em campo real, o LCP deve ficar significativamente
+abaixo dos 2,5 s. O CLS é 0 e o TBT é 80 ms, ambos dentro da meta.
 
 ### Nota sobre o orçamento de JS
 
@@ -175,24 +205,60 @@ crítico. Se forem para o bundle inicial, o orçamento estoura de vez.
 - Categoria "remodelação" sem fotos reais — filtro de galeria da Sprint 4 não
   pode ficar 100% fiel ao `CLAUDE.md` §12 sem decisão do cliente (nova foto ou
   ajuste do filtro).
-- Inconsistência de dados: `docs/13-OPEN-QUESTIONS-CLIENT-VALIDATION.md` lista
-  o Instagram como por confirmar, mas `data/project-data.json` tem
-  `instagramNeedsConfirmation: false`. Até validação explícita do cliente,
-  tratar como **não confirmado** (lado mais seguro) e corrigir o JSON.
+- ~~Inconsistência de dados do Instagram~~ — **resolvido em 2026-07-28**: o
+  handle real é `@inovarepinturaa` (duplo 'a'), JSON corrigido e confirmado.
 - Ficheiro `Sim_vamos_lá.mp4` (2,7 MB) apareceu na raiz durante a sessão. Não
   faz parte do pacote e não foi identificado; deixado intacto e excluído do
   versionamento até o cliente esclarecer o que é.
+
+## Canais confirmados pelo cliente (2026-07-28)
+
+- **E-mail** `renovarepintura192619@gmail.com` — confirmado (CLIENT-01 ✓).
+- **WhatsApp** `+351 913 411 051` — confirmado que recebe mensagens (CLIENT-02 ✓).
+  Adicionado à barra fixa do telemóvel e ao CTA final.
+- **Instagram** `@inovarepinturaa` — confirmado com correção do handle
+  (duplo 'a'; `@inovarepintura` estava errado) (CLIENT-03 ✓).
 
 ## Questões do cliente
 
 - Ver `docs/13-OPEN-QUESTIONS-CLIENT-VALIDATION.md`.
 - Issues abertas nesta sessão: `docs/decisions/CLIENT-ISSUES.md`.
+- **Resolvidas em 2026-07-28:** CLIENT-01 (e-mail), CLIENT-02 (WhatsApp),
+  CLIENT-03 (Instagram — handle corrigido para `@inovarepinturaa`).
 
-## Limitações conhecidas do Sprint 1
+## Deploy (Netlify — decisão do cliente em 2026-07-28)
 
-- **Sem verificação visual.** O ambiente não tem browser headless, por isso o
-  layout foi validado por estrutura HTML e CSS compilado, não por renderização.
-  Inspeção em mobile e desktop reais continua por fazer (ponto 4 do §17).
+O cliente confirmou que quer manter Netlify. O site está pronto para deploy:
+
+- `netlify.toml` configurado (build `npm run build`, publish `.next`,
+  plugin `@netlify/plugin-nextjs` v5 — suporta Next.js 13.5+, incluindo o 16).
+- `netlify-cli` testado via `npx` (27.0.1). **Não** instalado como
+  devDependency de propósito: conflito de peer deps com o `next`
+  (`@opentelemetry/api`) e centenas de MB no lockfile. Usar sempre via `npx`.
+
+Passos que exigem a conta do cliente (não executáveis pelo agente):
+
+```bash
+npx netlify-cli login          # abre o browser para autorizar
+npx netlify-cli init           # cria/liga o site na conta Netlify
+npx netlify-cli deploy --build --prod
+```
+
+Alternativa sem CLI: ligar o repositório GitHub em app.netlify.com —
+deploy automático a cada push.
+
+Pendente antes do apontar domínio: `NEXT_PUBLIC_SITE_URL` (CLIENT-08) para
+canonical/Open Graph/sitemap corretos.
+
+## Limitações conhecidas do Sprint 2
+
+- **Verificação visual feita via Playwright (Chromium headless), não em
+  dispositivos reais.** Os testes cobrem os comportamentos críticos mas a
+  renderização real em Safari iOS e em browsers Android específicos continua
+  por verificar.
+- O LCP mobile de 4,0 s é medido em ambiente simulado (4× CPU throttling).
+  Em campo real deve ser significativamente melhor. Não foi possível medir
+  INP no ambiente headless.
 - Serviços e Processo estão implementados com a copy aprovada, mas com
   apresentação simples — a grelha editorial e o motion secundário são a
   Sprint 3 (`S3-T01`, `S3-T04`).
@@ -202,10 +268,16 @@ crítico. Se forem para o bundle inicial, o orçamento estoura de vez.
 - `real-005` (trabalhador identificável) está no dataset mas fora da lista
   publicável, por `publicationNeedsConsent: true`. A galeria mostra 10 de 11
   fotos até CLIENT-04 ser resolvido.
+- Os testes e2e correm em Chromium. Safari/WebKit não foi testado por falta
+  de dependências de sistema no ambiente.
 
 ## Próxima ação
 
-- Sprint 2 — Cutscene e hero (ADR-006): pipeline de imagens já feito, falta
-  `CinematicIntro` com timeline única e dois renderers, skip acessível,
-  reduced motion, `PaintReveal` e QA da introdução.
-- Restrição herdada: GSAP por import dinâmico (ver nota do orçamento de JS).
+- **Deploy em Netlify (decisão do cliente: manter Netlify):** requer conta e
+  autenticação do cliente — ver secção "Deploy" abaixo.
+- **Validação com o cliente (ainda pendente):** consentimento do trabalhador
+  em `real-005` (CLIENT-04), pares antes/depois (CLIENT-05), área de serviço
+  além de Olhão (CLIENT-06), categoria "remodelação" (CLIENT-07), domínio
+  final (CLIENT-08).
+- **Verificação em dispositivos reais:** Safari iOS e browsers Android.
+- **Google Business Profile:** criar/otimizar perfil com NAP consistente.

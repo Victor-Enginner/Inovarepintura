@@ -11,13 +11,13 @@
     "phoneE164": "+351913411051",
     "telephoneUrl": "tel:+351913411051",
     "whatsappUrl": "https://wa.me/351913411051",
-    "whatsappNeedsConfirmation": true,
+    "whatsappNeedsConfirmation": false,
     "email": "renovarepintura192619@gmail.com",
     "emailUrl": "mailto:renovarepintura192619@gmail.com",
-    "emailNeedsConfirmation": true,
-    "instagramHandle": "@inovarepintura",
-    "instagramUrl": "https://instagram.com/inovarepintura",
-    "instagramNeedsConfirmation": true
+    "emailNeedsConfirmation": false,
+    "instagramHandle": "@inovarepinturaa",
+    "instagramUrl": "https://instagram.com/inovarepinturaa",
+    "instagramNeedsConfirmation": false
   },
   "address": {
     "streetAddress": "Rua do Pinheiro n.º 30",

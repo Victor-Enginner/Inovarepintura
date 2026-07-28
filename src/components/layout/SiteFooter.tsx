@@ -10,10 +10,10 @@ import type { ContactChannel } from '@/content/types';
 
 /** Um canal no footer.
  *
- * Canais por confirmar (e-mail, WhatsApp, Instagram — CLIENT-01/02/03) são
- * marcados fora de produção para que ninguém os leia como facto validado
- * durante a revisão. Em produção o marcador desaparece, porque o gate da
- * Sprint 5 impede o deploy antes da validação do cliente.
+ * Todos os canais estão confirmados desde 2026-07-28 (CLIENT-01/02/03
+ * resolvidos). O mecanismo de marcação "por confirmar" mantém-se: se um dado
+ * novo voltar a `needsConfirmation: true`, o marcador aparece em desenvolvimento
+ * para ninguém o ler como facto validado durante a revisão.
  */
 function ChannelLink({ channel }: { readonly channel: ContactChannel }) {
   const isExternal = channel.href.startsWith('http');

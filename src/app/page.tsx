@@ -11,12 +11,15 @@ import {
 } from '@/components/ui/primitives';
 import {
   confirmedServiceArea,
+  email,
   phone,
   processSteps,
   services,
+  whatsapp,
 } from '@/content/site';
 import {
   galleryFilters,
+  pairedImages,
   populatedCategories,
   publishableImages,
 } from '@/content/gallery';
@@ -41,8 +44,9 @@ function PrimaryHero() {
           </Prose>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            {/* O CTA de orçamento aponta para o telefone: é o único canal
-             * confirmado (CLIENT-01/02 ainda abertos). */}
+            {/* O CTA de orçamento aponta para o telefone: canal de resposta
+             * mais direta. WhatsApp está na barra fixa do telemóvel e no CTA
+             * final. */}
             <LinkButton href={phone.href} data-analytics="cta_quote_click">
               Pedir orçamento
             </LinkButton>
@@ -183,6 +187,75 @@ function RealWork() {
   );
 }
 
+function FeaturedBeforeAfter() {
+  /* CLIENT-05: o par ainda não foi confirmado como a mesma intervenção.
+   * Apresentamos lado a lado com as legendas reais de cada fotografia,
+   * sem slider e sem afirmar que são a mesma obra. Quando a confirmação
+   * chegar, converte-se num comparador acessível. */
+  const pair = pairedImages().get('moradia-ocre-01');
+  if (!pair || pair.length !== 2) return null;
+
+  const durante = pair.find((img) => img.stage === 'durante');
+  const resultado = pair.find((img) => img.stage === 'resultado');
+  if (!durante || !resultado) return null;
+
+  return (
+    <Section labelledBy="caso-real-titulo" className="bg-surface-200/40">
+      <Container>
+        <Eyebrow>Antes, durante e depois</Eyebrow>
+        <Heading level={2} size="3xl" id="caso-real-titulo" className="mt-4 text-navy-900">
+          Uma fachada renovada começa muito antes da última demão.
+        </Heading>
+        <Prose className="mt-6">
+          Preparação da superfície, trabalho em altura e acabamento em ocre com
+          molduras claras. Uma transformação construída por etapas e registada
+          numa obra real.
+        </Prose>
+
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          <figure>
+            <div className="overflow-hidden rounded-lg">
+              <Image
+                src={`/gallery/${durante.src.replace('assets/gallery/', '').replace('.jpg', '')}-1200.webp`}
+                alt={durante.alt}
+                width={1152}
+                height={1536}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            <figcaption className="mt-3">
+              <span className="block text-sm font-semibold text-navy-900">{durante.title}</span>
+              <span className="mt-1 block text-xs uppercase tracking-(--tracking-label) text-text-muted">
+                Durante
+              </span>
+            </figcaption>
+          </figure>
+
+          <figure>
+            <div className="overflow-hidden rounded-lg">
+              <Image
+                src={`/gallery/${resultado.src.replace('assets/gallery/', '').replace('.jpg', '')}-1200.webp`}
+                alt={resultado.alt}
+                width={1152}
+                height={1536}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="h-auto w-full object-cover"
+              />
+            </div>
+            <figcaption className="mt-3">
+              <span className="block text-sm font-semibold text-navy-900">{resultado.title}</span>
+              <span className="mt-1 block text-xs uppercase tracking-(--tracking-label) text-text-muted">
+                Resultado
+              </span>
+            </figcaption>
+          </figure>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
 function ServiceArea() {
   return (
     <Section labelledBy="area-titulo" className="bg-surface-200/40">
@@ -215,8 +288,11 @@ function FinalCta() {
           <LinkButton href={phone.href} data-analytics="cta_quote_click">
             Pedir orçamento
           </LinkButton>
-          <LinkButton href={phone.href} variant="secondary" data-analytics={phone.analyticsEvent}>
-            Ligar: {phone.label}
+          <LinkButton href={whatsapp.href} variant="secondary" data-analytics={whatsapp.analyticsEvent}>
+            WhatsApp
+          </LinkButton>
+          <LinkButton href={email.href} variant="secondary" data-analytics={email.analyticsEvent}>
+            Enviar e-mail
           </LinkButton>
         </div>
       </Container>
@@ -233,6 +309,7 @@ export default function HomePage() {
       <Services />
       <Process />
       <RealWork />
+      <FeaturedBeforeAfter />
       <ServiceArea />
       <FinalCta />
     </>

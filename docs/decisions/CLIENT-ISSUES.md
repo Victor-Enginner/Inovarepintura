@@ -8,22 +8,25 @@ apresentado em produção como facto confirmado até fechar aqui.
 
 - Confirmar se `renovarepintura192619@gmail.com` está correto.
 - Bloqueia: Sprint 5 (`S5-T02`), Gate D.
-- Estado atual no código: `emailNeedsConfirmation: true` (correto, manter).
+- **RESOLVIDO em 2026-07-28:** cliente confirmou o e-mail.
+  `emailNeedsConfirmation: false` em `data/project-data.json`.
 
 ## CLIENT-02 — WhatsApp
 
 - Confirmar se `+351 913 411 051` recebe WhatsApp.
 - Bloqueia: Sprint 5 (`S5-T01`, `S5-T03`), Gate D.
-- Estado atual no código: `whatsappNeedsConfirmation: true` (correto, manter).
+- **RESOLVIDO em 2026-07-28:** cliente confirmou que o número recebe WhatsApp.
+  `whatsappNeedsConfirmation: false`. WhatsApp adicionado à barra fixa do
+  telemóvel (`StickyContact`) e ao CTA final.
 
 ## CLIENT-03 — Instagram
 
 - Confirmar handle/URL `@inovarepintura`.
-- **Correção aplicada nesta sessão:** `data/project-data.json` tinha
-  `instagramNeedsConfirmation: false`, o que contradizia
-  `docs/13-OPEN-QUESTIONS-CLIENT-VALIDATION.md`. Corrigido para `true` até
-  validação explícita.
-- Bloqueia: Sprint 5, Gate D.
+- **RESOLVIDO em 2026-07-28:** o handle real é `@inovarepinturaa` (duplo 'a' —
+  o `@inovarepintura` estava ocupado). JSON corrigido:
+  `instagramHandle: "@inovarepinturaa"`,
+  `instagramUrl: "https://instagram.com/inovarepinturaa"`,
+  `instagramNeedsConfirmation: false`.
 
 ## CLIENT-04 — Consentimento de imagem de trabalhador
 

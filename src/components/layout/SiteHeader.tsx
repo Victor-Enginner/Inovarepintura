@@ -43,8 +43,8 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        {/* Telefone é o único canal confirmado sem reservas — por isso é ele
-         * que ocupa o CTA do cabeçalho, e não o WhatsApp (CLIENT-02). */}
+        {/* Telefone no CTA do cabeçalho: é o canal de resposta mais direta
+         * para um visitante que quer falar já. */}
         <LinkButton href={phone.href} className="ms-auto" data-analytics={phone.analyticsEvent}>
           Ligar
           <span className="hidden sm:inline">: {phone.label}</span>

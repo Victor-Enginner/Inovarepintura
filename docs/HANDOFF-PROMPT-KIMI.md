@@ -134,10 +134,9 @@ Regra prática dos clíticos: em pt-PT o pronome vai depois do verbo
 | Errado (pt-BR) | Correto (pt-PT) |
 |---|---|
 | conta**t**o | conta**c**to |
-| fa**t**o (= facto) | fa**c**to |
+| fa**t**o (no sentido de facto) | fa**c**to |
 | **ú**mido | **h**úmido |
 | rece**p**ção | rece**ç**ão |
-| ele**t**rico | elé**c**trico → em AO90: **elétrico** (ambos) |
 
 Atenção: `contacto` e `facto` mantêm o **c** em Portugal mesmo depois do
 Acordo Ortográfico. É dos erros mais visíveis.
@@ -167,13 +166,15 @@ Acordo Ortográfico. É dos erros mais visíveis.
 | **encanamento** | **canalização** |
 | **drywall** / gesso acartonado | **pladur** |
 | **massa corrida** | **betume** / barramento |
+| **tinta látex** | **tinta plástica** |
+| **selador** | **primário** |
 | esquadrias | **caixilharia** |
 | piso (superfície) | **pavimento** / chão |
-| **acabamento** | acabamento (igual) |
-| **andaime** | andaime (igual) |
-| **fachada** | fachada (igual) |
-| **impermeabilização** | impermeabilização (igual) |
-| **isolamento térmico** | isolamento térmico (igual) |
+
+**Não "corrijas" estas** — são idênticas nas duas variantes e já estão certas
+no site: *acabamento, andaime, fachada, impermeabilização, isolamento
+térmico, pintura, reparação, orçamento, obra, parede, teto, telhado,
+azulejo*.
 
 ### Formatos
 

@@ -18,7 +18,7 @@ export const site = {
 
 export const postalAddress: PostalAddress = address;
 
-/** Telefone. Confirmado pelo cartão de visita — o único canal sem reservas. */
+/** Telefone. Confirmado pelo cartão de visita. */
 export const phone: ContactChannel = {
   label: contact.phoneDisplay,
   href: `tel:${contact.phoneE164}`,
@@ -28,9 +28,8 @@ export const phone: ContactChannel = {
 
 /** Mensagem pré-preenchida do WhatsApp (copy aprovada em docs/04).
  *
- * O `docs/00` avisa: só ativar o prefill depois de validar o canal. Fica
- * codificada aqui, mas o componente só a usa quando `needsConfirmation` for
- * false. O conteúdo nunca vai para analytics (§16). */
+ * Canal confirmado pelo cliente em 2026-07-28 (CLIENT-02 resolvido) — o
+ * prefill está ativo. O conteúdo nunca vai para analytics (§16). */
 const whatsappMessage =
   'Olá, Inovare Pintura. Encontrei o vosso site e gostaria de pedir ' +
   'informação sobre um trabalho de pintura, em Olhão.';
@@ -59,10 +58,9 @@ export const instagram: ContactChannel = {
 /** Todos os canais, para o footer e o bloco de contacto. */
 export const contactChannels = [phone, whatsapp, email, instagram] as const;
 
-/** Canais seguros de apresentar como facto neste momento.
- *
- * Usado onde um contacto errado custaria um lead (CTA principal). O footer
- * mostra tudo, mas marca o que está por validar. */
+/** Todos os canais estão confirmados desde 2026-07-28 (CLIENT-01/02/03
+ * resolvidos). `confirmedChannels` mantém-se como a lista usada onde um
+ * contacto errado custaria um lead (CTAs principais). */
 export const confirmedChannels = contactChannels.filter((c) => !c.needsConfirmation);
 
 /** Localidades confirmadas. `needsConfirmation` fica de fora até CLIENT-06:

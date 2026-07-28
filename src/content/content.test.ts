@@ -100,13 +100,21 @@ describe('contactos', () => {
     expect(whatsapp.href).not.toContain(' ');
   });
 
-  it('mantém e-mail, WhatsApp e Instagram marcados por confirmar', () => {
-    /* CLIENT-01/02/03. Se algum destes passar a false sem o cliente ter
-     * confirmado, o teste falha e trava o release. */
-    expect(email.needsConfirmation).toBe(true);
-    expect(whatsapp.needsConfirmation).toBe(true);
-    expect(instagram.needsConfirmation).toBe(true);
+  it('todos os canais estão confirmados pelo cliente', () => {
+    /* CLIENT-01/02/03 resolvidos em 2026-07-28: e-mail, WhatsApp e Instagram
+     * confirmados diretamente pelo cliente. O Instagram foi corrigido para
+     * @inovarepinturaa (duplo 'a') nessa validação. */
+    expect(email.needsConfirmation).toBe(false);
+    expect(whatsapp.needsConfirmation).toBe(false);
+    expect(instagram.needsConfirmation).toBe(false);
     expect(phone.needsConfirmation).toBe(false);
+  });
+
+  it('Instagram usa o handle correto com duplo a', () => {
+    /* O handle real é @inovarepinturaa — o @inovarepintura estava ocupado.
+     * Um typo aqui enviaria visitantes para uma conta alheia. */
+    expect(instagram.label).toBe('@inovarepinturaa');
+    expect(instagram.href).toBe('https://instagram.com/inovarepinturaa');
   });
 
   it('associa a cada canal um evento de analytics da lista fechada do §16', () => {
