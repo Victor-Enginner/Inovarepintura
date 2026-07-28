@@ -2,6 +2,13 @@
 Inovare-Pintura-Claude-Code-Production-Package.zip
 Inovare-Pintura-Prompt-Mestre-Claude.md
 
+# Masters de vídeo — guardados localmente/backup, nunca no git (ADR-006).
+# Os derivados que o site serve são versionados em assets/cutscene/.
+source-assets/
+
+# Ficheiro solto por identificar (ver PROJECT_STATUS.md)
+Sim_vamos_lá.mp4
+
 # Node / Next.js
 node_modules/
 .next/

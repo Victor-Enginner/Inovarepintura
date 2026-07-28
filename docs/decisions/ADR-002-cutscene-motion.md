@@ -2,7 +2,12 @@
 
 ## Estado
 
-Aceite
+**Substituído pelo [ADR-006](ADR-006-cutscene-hibrida-v2.md)** (2026-07-28).
+
+A premissa deste ADR — "o MP4 disponível não tem keyframes preparados para
+seek" — deixou de ser verdadeira quando o cliente forneceu o master v2, com
+56 keyframes a intervalos de 0,200 s verificados. O ADR-006 documenta as
+medições e a decisão híbrida que substitui esta.
 
 ## Contexto
 

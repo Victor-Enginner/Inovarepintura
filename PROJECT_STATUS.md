@@ -87,10 +87,11 @@ cartão de visita) — só para reconstrução vetorial, não são ficheiros fin
 | ADR | Decisão | Estado |
 |---|---|---|
 | ADR-001 | Stack: Next.js App Router + TS strict + Tailwind + npm + Netlify | Proposto |
-| ADR-002 | Cutscene por camadas de imagem (não scroll-scrub de vídeo) | Proposto |
+| ADR-002 | Cutscene por camadas de imagem (não scroll-scrub de vídeo) | **Substituído pelo ADR-006** |
 | ADR-003 | Galeria: CSS Grid + dialog acessível construído no projeto (fallback definitivo do `CLAUDE.md` §8) até auditoria de libs externas | Proposto |
 | ADR-004 | Pipeline de imagem: AVIF/WebP + JPEG fallback, larguras 480–1920 | Proposto |
 | ADR-005 | Analytics: eventos mínimos do `CLAUDE.md` §16, sem PII, carregado após consentimento/idle | Proposto |
+| ADR-006 | Cutscene híbrida sobre o master v2: vídeo com scrub no desktop, sequência WebP em canvas no mobile | Aceite — substitui ADR-002 |
 
 ## Verificações
 
@@ -99,6 +100,19 @@ cartão de visita) — só para reconstrução vetorial, não são ficheiros fin
 | `git --version` | 2.55.0 | 2026-07-28 |
 | `node -v` | v24.18.0 | 2026-07-28 |
 | `npm -v` | 11.16.0 | 2026-07-28 |
+| `ffprobe` keyframes master v2 | 56 keyframes @ 0,200 s exatos | 2026-07-28 |
+| `ffprobe` keyframes derivado desktop | 56 keyframes @ 0,200 s (preservados) | 2026-07-28 |
+| `ffmpeg -lavfi ssim` CRF 27/29/31 | 0,9806 / 0,9748 / 0,9687 | 2026-07-28 |
+| `scripts/build-cutscene-assets.sh` | OK — 9,9 MB de derivados | 2026-07-28 |
+| Verificação visual dos posters | resultado = ocre limpo, sem splash | 2026-07-28 |
+
+## Orçamento de assets da cutscene (ADR-006)
+
+| Caminho | Payload | Orçamento |
+|---|---:|---|
+| `assets/cutscene/desktop/` | 7,5 MB | fora do caminho crítico; carregado após LCP |
+| `assets/cutscene/mobile/` | 940 KB | 24 frames WebP 720px |
+| `assets/cutscene/poster/` | 1,6 MB | maior ficheiro 229 KB ≤ 250 KB (§15) |
 
 ## Métricas
 
@@ -118,6 +132,9 @@ cartão de visita) — só para reconstrução vetorial, não são ficheiros fin
   o Instagram como por confirmar, mas `data/project-data.json` tem
   `instagramNeedsConfirmation: false`. Até validação explícita do cliente,
   tratar como **não confirmado** (lado mais seguro) e corrigir o JSON.
+- Ficheiro `Sim_vamos_lá.mp4` (2,7 MB) apareceu na raiz durante a sessão. Não
+  faz parte do pacote e não foi identificado; deixado intacto e excluído do
+  versionamento até o cliente esclarecer o que é.
 
 ## Questões do cliente
 
