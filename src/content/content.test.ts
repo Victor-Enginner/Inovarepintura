@@ -30,8 +30,8 @@ describe('galeria', () => {
   });
 
   it('filtra por categoria sem perder nem inventar imagens', () => {
-    // "Todos" mostra o que é publicável, não o inventário completo:
-    // real-005 fica de fora até haver consentimento (CLIENT-04).
+    // "Todos" mostra o que é publicável, não o inventário completo.
+    // Desde 2026-09-30 os dois coincidem: real-005 foi liberado (CLIENT-04).
     expect(imagesByCategory('todos')).toHaveLength(publishableImages.length);
     const exteriores = imagesByCategory('exteriores');
     expect(exteriores.length).toBeGreaterThan(0);
@@ -56,32 +56,31 @@ describe('galeria', () => {
 });
 
 describe('consentimento e publicação', () => {
-  /* Release blocker do docs/09: "fotografia pessoal sem consentimento". */
-  it('exclui da publicação a foto com trabalhador identificável', () => {
+  /* CLIENT-04 resolvido em 2026-09-30: o cliente confirmou o consentimento
+   * do trabalhador em real-005. A regra continua valendo para fotos novas. */
+  it('real-005 tem consentimento confirmado e é publicável', () => {
     const inDataset = galleryImages.find((i) => i.id === 'real-005');
     expect(inDataset?.personVisible).toBe(true);
-    expect(inDataset?.publicationNeedsConsent).toBe(true);
+    expect(inDataset?.consentConfirmedAt).toBe('2026-09-30');
 
-    // Existe no inventário, mas nunca na lista que a UI consome.
-    expect(publishableImages.some((i) => i.id === 'real-005')).toBe(false);
-    expect(imagesByCategory('exteriores').some((i) => i.id === 'real-005')).toBe(false);
+    expect(publishableImages.some((i) => i.id === 'real-005')).toBe(true);
   });
 
-  it('nenhuma imagem publicável espera consentimento', () => {
-    for (const image of publishableImages) {
-      expect(image.publicationNeedsConsent).not.toBe(true);
+  it('nenhuma foto com pessoa identificável publica sem consentimento', () => {
+    /* Invariante permanente do §11: se entrar uma foto nova de pessoa sem
+     * `consentConfirmedAt`, este teste falha antes de chegar a produção. */
+    for (const image of galleryImages) {
+      if (image.personVisible === true) {
+        expect(image.consentConfirmedAt).toBeDefined();
+      }
     }
-    expect(publishableImages).toHaveLength(galleryImages.length - 1);
+    expect(publishableImages).toHaveLength(galleryImages.length);
   });
 
-  it('mantém os três pares por confirmar (CLIENT-05)', () => {
-    /* Enquanto o cliente não confirmar que cada par é a mesma intervenção,
-     * nenhum slider pode ser rotulado "antes/depois". */
-    expect([...pairsAwaitingConfirmation()].sort()).toEqual([
-      'interior-01',
-      'moradia-ocre-01',
-      'terraco-01',
-    ]);
+  it('não tem pares por confirmar (CLIENT-05 resolvido em 2026-09-30)', () => {
+    /* Os três pares foram confirmados como a mesma intervenção. Um par
+     * novo sem `pairConfirmedAt` aparece aqui e bloqueia o slider. */
+    expect(pairsAwaitingConfirmation()).toEqual([]);
   });
 });
 

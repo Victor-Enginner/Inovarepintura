@@ -5,7 +5,7 @@ test.describe('Galeria', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     /* Saltar a cutscene para chegar rapidamente à galeria. */
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     if (await skipButton.isVisible()) {
       await skipButton.click();
     }
@@ -42,8 +42,8 @@ test.describe('Galeria', () => {
   test('mudar de filtro altera a contagem anunciada', async ({ page }) => {
     const liveRegion = page.locator('#trabalhos [aria-live="polite"]');
 
-    /* Começar com "Todos" — 10 trabalhos (11 menos real-005). */
-    await expect(liveRegion).toContainText('10 trabalhos');
+    /* Começar com "Todos" — 11 trabalhos (real-005 liberado em 2026-09-30). */
+    await expect(liveRegion).toContainText('11 trabalhos');
 
     /* Filtrar por Coberturas — 3 trabalhos. */
     await page.getByRole('button', { name: 'Coberturas' }).click();
@@ -57,7 +57,7 @@ test.describe('Galeria', () => {
   test('filtro "Todos" mostra todos os trabalhos publicáveis', async ({ page }) => {
     await page.getByRole('button', { name: 'Todos' }).click();
     const items = page.locator('#trabalhos ul li');
-    await expect(items).toHaveCount(10);
+    await expect(items).toHaveCount(11);
   });
 
   test('não existe filtro de Remodelação (sem fotos reais)', async ({ page }) => {

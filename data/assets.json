@@ -120,7 +120,7 @@
       "alt": "Trabalho de pintura em altura num edifício residencial.",
       "provenance": "real",
       "personVisible": true,
-      "publicationNeedsConsent": true
+      "consentConfirmedAt": "2026-09-30"
     },
     {
       "id": "real-006",
@@ -131,7 +131,7 @@
       "alt": "Terraço com pavimento renovado e paredes brancas.",
       "provenance": "real",
       "pairId": "terraco-01",
-      "pairNeedsConfirmation": true
+      "pairConfirmedAt": "2026-09-30"
     },
     {
       "id": "real-007",
@@ -142,7 +142,7 @@
       "alt": "Terraço antes da limpeza e renovação do pavimento.",
       "provenance": "real",
       "pairId": "terraco-01",
-      "pairNeedsConfirmation": true
+      "pairConfirmedAt": "2026-09-30"
     },
     {
       "id": "real-008",
@@ -153,7 +153,7 @@
       "alt": "Sala com acabamento interior em branco e grafite.",
       "provenance": "real",
       "pairId": "interior-01",
-      "pairNeedsConfirmation": true
+      "pairConfirmedAt": "2026-09-30"
     },
     {
       "id": "real-009",
@@ -164,7 +164,7 @@
       "alt": "Sala protegida durante trabalho de pintura interior.",
       "provenance": "real",
       "pairId": "interior-01",
-      "pairNeedsConfirmation": true
+      "pairConfirmedAt": "2026-09-30"
     },
     {
       "id": "real-010",
@@ -175,7 +175,7 @@
       "alt": "Moradia com andaime durante preparação da fachada.",
       "provenance": "real",
       "pairId": "moradia-ocre-01",
-      "pairNeedsConfirmation": true
+      "pairConfirmedAt": "2026-09-30"
     },
     {
       "id": "real-011",
@@ -186,7 +186,7 @@
       "alt": "Moradia com acabamento ocre e molduras claras.",
       "provenance": "real",
       "pairId": "moradia-ocre-01",
-      "pairNeedsConfirmation": true
+      "pairConfirmedAt": "2026-09-30"
     }
   ]
 }

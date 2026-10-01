@@ -265,9 +265,7 @@ canonical/Open Graph/sitemap corretos.
 - Navegação sem menu hamburger: quatro âncoras que fluem em duas linhas no
   mobile. Evita um componente client e mantém a navegação funcional sem
   JavaScript. Reavaliar se o número de itens crescer.
-- `real-005` (trabalhador identificável) está no dataset mas fora da lista
-  publicável, por `publicationNeedsConsent: true`. A galeria mostra 10 de 11
-  fotos até CLIENT-04 ser resolvido.
+- ~~`real-005` fora da lista publicável~~ — **resolvido em 2026-09-30**: consentimento confirmado (CLIENT-04); a galeria mostra as 11 fotos. A salvaguarda em `publishableImages` mantém-se para fotos futuras.
 - Os testes e2e correm em Chromium. Safari/WebKit não foi testado por falta
   de dependências de sistema no ambiente.
 
@@ -281,3 +279,25 @@ canonical/Open Graph/sitemap corretos.
   final (CLIENT-08).
 - **Verificação em dispositivos reais:** Safari iOS e browsers Android.
 - **Google Business Profile:** criar/otimizar perfil com NAP consistente.
+
+## Validações fechadas pelo cliente (2026-09-30)
+
+- **CLIENT-04 ✓** Consentimento do trabalhador em `real-005`: confirmado.
+  Foto publicável; galeria mostra 11 fotos.
+- **CLIENT-05 ✓** Pares antes/depois confirmados como a mesma intervenção
+  (`terraco-01`, `interior-01`, `moradia-ocre-01`), registado com
+  `pairConfirmedAt` em `data/assets.json`.
+- **CLIENT-06 ✓** Área de serviço: apenas Olhão por agora (decisão do
+  cliente); campo `needsConfirmation` vazio em `project-data.json`.
+- **CLIENT-07** Categoria "Remodelação": serviço mantido (existe), filtro de
+  galeria continua oculto até haver fotos reais classificadas.
+- Horário de atendimento: o cliente decidiu não incluir.
+- Política de privacidade: criada em `/privacidade`, ligada ao rodapé e ao
+  `sitemap.xml`.
+- Analytics: cliente optou por não instalar ferramenta por agora; a camada
+  de eventos (`src/lib/analytics.tsx`) mantém-se pronta (`send()` em consola).
+- Logo animada (pincel a sair da lata): pendente de ficheiro vetorial (SVG)
+  do cliente; hoje só existem JPGs de referência em `assets/brand/`.
+- Splash da intro: cliente decidiu manter o atual.
+- Domínio: cliente vai comprar na Hostinger após pagamento; runbook em
+  `docs/DEPLOY.md` + passos DNS (A/CNAME para Netlify, `NEXT_PUBLIC_SITE_URL`).

@@ -40,9 +40,9 @@
     "confirmed": [
       "Olhão"
     ],
-    "needsConfirmation": [
-      "restante Algarve"
-    ]
+    "needsConfirmation": [],
+    "confirmedAt": "2026-09-30",
+    "note": "Cliente confirmou: apenas Olhão por agora. Reavaliar com o cliente antes de anunciar qualquer expansão."
   },
   "referenceSite": {
     "url": "https://tranquilin-site1.netlify.app/",

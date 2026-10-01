@@ -1,10 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Cutscene', () => {
-  test('botão "Saltar introdução" leva ao hero', async ({ page }) => {
+  test('link "Saltar introdução" leva ao hero', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    /* É uma âncora <a href="#hero">, não um <button>: a âncora funciona
+     * mesmo antes da hidratação e sem JavaScript (§6). O onClick só
+     * acrescenta o foco. */
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await expect(skipButton).toBeVisible();
     await skipButton.click();
 

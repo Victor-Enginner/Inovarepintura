@@ -4,10 +4,10 @@ test.describe('Navegação por teclado', () => {
   test('percorrer a página só com Tab, sem ficar preso', async ({ page }) => {
     await page.goto('/');
 
-    /* Aguardar a hidratação: o botão "Saltar introdução" só é renderizado
-     * depois do renderer ser escolhido no cliente. Sem esta espera, a ordem
-     * de tabulação muda a meio do teste e o resultado é intermitente. */
-    await page.getByRole('button', { name: 'Saltar introdução' }).waitFor();
+    /* Aguardar a hidratação: o renderer da cutscene só é escolhido no
+     * cliente. Sem esta espera, a ordem de tabulação muda a meio do teste
+     * e o resultado é intermitente. */
+    await page.getByRole('link', { name: 'Saltar introdução' }).waitFor();
 
     /* Percorrer 25 elementos com Tab e registar o índice de cada um na lista
      * de focáveis do documento. Índices estritamente crescentes provam que o

@@ -53,6 +53,7 @@ export function SiteFooter() {
             <Heading level={3} size="xl" className="text-mineral-50">
               {site.name}
             </Heading>
+            <p className="mt-2 text-sm text-mineral-50/70">{site.tagline}</p>
             {/* NAP — tem de ser idêntico ao Google Business Profile (§13). */}
             <address className="mt-4 not-italic text-mineral-50/80">
               {postalAddress.streetAddress}
@@ -84,16 +85,25 @@ export function SiteFooter() {
               ))}
             </ul>
             {/* Só localidades confirmadas — o §9 proíbe anunciar cobertura
-             * não validada (CLIENT-06). */}
+             * não validada. CLIENT-06 fechado em 2026-09-30: apenas Olhão,
+             * confirmado pelo cliente. */}
             <p className="mt-4 text-sm text-mineral-50/70">
               Área de atuação: {confirmedServiceArea.join(', ')}
             </p>
           </div>
         </div>
 
-        <p className="mt-12 border-t border-mineral-50/20 pt-6 text-sm text-mineral-50/60">
-          © {new Date().getFullYear()} {site.name}
-        </p>
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-mineral-50/20 pt-6 text-sm text-mineral-50/60">
+          <p>
+            © {new Date().getFullYear()} {site.name}
+          </p>
+          <a
+            href="/privacidade"
+            className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-teal-500"
+          >
+            Política de privacidade
+          </a>
+        </div>
       </Container>
     </footer>
   );

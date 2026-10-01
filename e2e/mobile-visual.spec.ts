@@ -23,12 +23,12 @@ test.describe('Verificação visual em telemóvel', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('botão "Saltar introdução" é alcançável e funciona em ecrã estreito', async ({
+  test('link "Saltar introdução" é alcançável e funciona em ecrã estreito', async ({
     page,
   }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await expect(skipButton).toBeVisible();
     await skipButton.click();
 
@@ -40,7 +40,7 @@ test.describe('Verificação visual em telemóvel', () => {
     await page.goto('/');
 
     /* Saltar cutscene. */
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
 
     /* Rolar até ao rodapé. */
@@ -59,7 +59,7 @@ test.describe('Verificação visual em telemóvel', () => {
   test('galeria mostra grelha (não carrossel magnético) em ecrã estreito', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
     await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
 
@@ -72,7 +72,7 @@ test.describe('Verificação visual em telemóvel', () => {
   test('dialog abre e fecha ao toque em ecrã estreito', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
     await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
 
@@ -90,7 +90,7 @@ test.describe('Verificação visual em telemóvel', () => {
   test('não há scroll horizontal em ecrã estreito', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
 
     /* Rolar até ao fim da página. */

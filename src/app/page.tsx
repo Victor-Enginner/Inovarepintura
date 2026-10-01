@@ -188,10 +188,10 @@ function RealWork() {
 }
 
 function FeaturedBeforeAfter() {
-  /* CLIENT-05: o par ainda não foi confirmado como a mesma intervenção.
-   * Apresentamos lado a lado com as legendas reais de cada fotografia,
-   * sem slider e sem afirmar que são a mesma obra. Quando a confirmação
-   * chegar, converte-se num comparador acessível. */
+  /* CLIENT-05 confirmado em 2026-09-30: os pares são a mesma intervenção.
+   * Mantemos lado a lado (comparador slider é evolução futura); o rótulo
+   * honesto de cada fotografia continua, agora com a garantia de que se
+   * trata da mesma obra do início ao fim. */
   const pair = pairedImages().get('moradia-ocre-01');
   if (!pair || pair.length !== 2) return null;
 

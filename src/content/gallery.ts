@@ -43,11 +43,10 @@ function parseImage(raw: (typeof assetsData.gallery)[number]): GalleryImage | nu
     alt: raw.alt,
     provenance: 'real' as const,
     pairId: 'pairId' in raw ? raw.pairId : undefined,
-    pairNeedsConfirmation:
-      'pairNeedsConfirmation' in raw ? raw.pairNeedsConfirmation : undefined,
+    pairConfirmedAt: 'pairConfirmedAt' in raw ? raw.pairConfirmedAt : undefined,
     personVisible: 'personVisible' in raw ? raw.personVisible : undefined,
-    publicationNeedsConsent:
-      'publicationNeedsConsent' in raw ? raw.publicationNeedsConsent : undefined,
+    consentConfirmedAt:
+      'consentConfirmedAt' in raw ? raw.consentConfirmedAt : undefined,
   });
 }
 
@@ -58,12 +57,16 @@ export const galleryImages: readonly GalleryImage[] = assetsData.gallery
 
 /** As que podem efetivamente ser mostradas ao público.
  *
- * Exclui quem espera consentimento (CLIENT-04). É esta a lista que a UI
- * consome — a de cima serve para inventário e testes. Publicar uma
- * fotografia de pessoa identificável sem consentimento é release blocker.
+ * Regra do §11/docs/09: fotografia com pessoa identificável só publica com
+ * consentimento confirmado (`consentConfirmedAt`). Fotos sem pessoas não
+ * precisam do campo — publicam normalmente. `real-005` foi liberado em
+ * 2026-09-30 (CLIENT-04); se entrar outra foto de pessoa sem consentimento,
+ * fica barrada aqui em vez de fugir para produção. É esta a lista que a UI
+ * consome — a de cima serve para inventário e testes.
  */
 export const publishableImages: readonly GalleryImage[] = galleryImages.filter(
-  (image) => image.publicationNeedsConsent !== true,
+  (image) =>
+    image.personVisible !== true || image.consentConfirmedAt !== undefined,
 );
 
 /** Filtros exigidos pelo §12, na ordem da copy aprovada (docs/04). */
@@ -108,11 +111,15 @@ export function pairedImages(): ReadonlyMap<string, readonly GalleryImage[]> {
   return pairs;
 }
 
-/** True se todos os pares ainda esperam confirmação do cliente (CLIENT-05). */
+/** Pares que ainda esperam confirmação do cliente (CLIENT-05).
+ *
+ * Resolvido em 2026-09-30 — os três pares existentes foram confirmados.
+ * A função mantém-se como salvaguarda: um par novo sem `pairConfirmedAt`
+ * aparece aqui e impede qualquer slider "antes/depois" prematuro. */
 export function pairsAwaitingConfirmation(): readonly string[] {
   const awaiting = new Set<string>();
   for (const image of publishableImages) {
-    if (image.pairId !== undefined && image.pairNeedsConfirmation === true) {
+    if (image.pairId !== undefined && image.pairConfirmedAt === undefined) {
       awaiting.add(image.pairId);
     }
   }

@@ -6,7 +6,7 @@ test.describe('Acessibilidade (axe)', () => {
     await page.goto('/');
 
     /* Saltar a cutscene. */
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     if (await skipButton.isVisible()) {
       await skipButton.click();
     }

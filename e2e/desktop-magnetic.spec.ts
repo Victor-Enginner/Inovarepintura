@@ -7,7 +7,7 @@ test.describe('Carrossel magnético em desktop', () => {
   test('galeria em modo magnético mostra barras em ecrã largo', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
     await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
 
@@ -23,10 +23,10 @@ test.describe('Carrossel magnético em desktop', () => {
     expect(display).toBe('flex');
   });
 
-  test('dez barras cabem em ecrã de 1280 px sem transbordar', async ({ page }) => {
+  test('onze barras cabem em ecrã de 1280 px sem transbordar', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
     await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
 
@@ -46,7 +46,7 @@ test.describe('Carrossel magnético em desktop', () => {
   test('navegação por Tab magnetiza a barra focada', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
     await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
 
@@ -72,7 +72,7 @@ test.describe('Carrossel magnético em desktop', () => {
   test('filtro com poucas fotografias mantém o efeito funcional', async ({ page }) => {
     await page.goto('/');
 
-    const skipButton = page.getByRole('button', { name: 'Saltar introdução' });
+    const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
     await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
 

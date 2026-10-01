@@ -73,18 +73,21 @@ export interface GalleryImage {
   readonly alt: string;
   /** Sempre 'real' — o tipo impede que uma imagem gerada entre na galeria. */
   readonly provenance: 'real';
-  /** Agrupa antes/depois da mesma obra. Só usar em slider após CLIENT-05. */
+  /** Agrupa antes/depois da mesma obra. Slider só após o par estar
+   * confirmado (`pairConfirmedAt` presente) — CLIENT-05. */
   readonly pairId?: string | undefined;
-  /** True quando o par ainda não foi confirmado como a mesma intervenção. */
-  readonly pairNeedsConfirmation?: boolean | undefined;
+  /** Data ISO da confirmação do cliente de que o par é a mesma intervenção.
+   * Substitui `pairNeedsConfirmation` (resolvido em 2026-09-30). */
+  readonly pairConfirmedAt?: string | undefined;
   /** True quando há uma pessoa identificável na fotografia. */
   readonly personVisible?: boolean | undefined;
-  /** True enquanto o consentimento de publicação não estiver obtido.
+  /** Data ISO do consentimento de publicação confirmado pelo cliente.
    *
    * CLIENT-04: `real-005` mostra um trabalhador identificável. O §11 e o
-   * docs/09 tratam "fotografia pessoal sem consentimento" como release
-   * blocker, por isso a imagem existe no dataset mas não é publicável. */
-  readonly publicationNeedsConsent?: boolean | undefined;
+   * docs/09 tratavam "fotografia pessoal sem consentimento" como release
+   * blocker. Resolvido em 2026-09-30: consentimento confirmado, a foto é
+   * publicável. */
+  readonly consentConfirmedAt?: string | undefined;
 }
 
 export interface Service {
