@@ -301,3 +301,15 @@ canonical/Open Graph/sitemap corretos.
 - Splash da intro: cliente decidiu manter o atual.
 - Domínio: cliente vai comprar na Hostinger após pagamento; runbook em
   `docs/DEPLOY.md` + passos DNS (A/CNAME para Netlify, `NEXT_PUBLIC_SITE_URL`).
+
+## Sprint 3 (2026-09-30) — validações, privacidade, qualidade e CI/CD
+
+- CLIENT-04/05/06/07 fechados; `/privacidade` criada; rodapé enriquecido.
+- **13 falhas e2e eliminadas** — causa raiz: o teste procurava
+  `role: 'button'` mas o "Saltar introdução" é âncora `<a>` desde o fix
+  `5d71027` (correto: funciona sem JS). Suíte agora 32 ✓ / 0 ✗ / 10 skip.
+- **CI criado:** `.github/workflows/ci.yml` — Gate D completo (lint,
+  typecheck, testes, build, e2e com Playwright) em cada push/PR.
+- **Deploy contínuo documentado:** push → CI → Netlify publica
+  (`docs/DEPLOY.md` com runbook Git + domínio Hostinger passo a passo).
+- Commit: `0de8570`.
