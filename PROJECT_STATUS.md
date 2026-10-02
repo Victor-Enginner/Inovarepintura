@@ -506,3 +506,23 @@ e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.
   `auto` nos próprios links, para o CTA continuar clicável. Teria passado
   despercebido: o link é pequeno e está no canto, e nada na consola denuncia
   um clique bloqueado.
+
+**Flash das frases no F5 (corrigido)**
+- Ao carregar a página, as três frases do percurso apareciam todas de uma vez,
+  sobrepostas no centro, e desapareciam de repente quando o GSAP arrancava na
+  hidratação. Causa: o HTML servido trazia `class="hero-beat"` sem opacidade
+  inline, e o CSS só definia `display: block` — nada as mantinha escondidas
+  entre o primeiro pixel e o primeiro efeito.
+- O reveal final já estava protegido por `.js .hero-reveal { opacity: 0 }`; as
+  frases não tinham a regra equivalente.
+- Corrigido com `opacity: 0` em `.js .hero-beat`. O GSAP escreve opacidade
+  inline, que passa por cima da regra, por isso a timeline continua a
+  controlar tudo.
+- Medido por diferença de píxeis entre a captura aos 80 ms e a captura estável
+  aos 1200 ms: a diferença média caiu de **2,45 para 0,09**, e na faixa onde
+  o texto aparece (50–70% da altura) de **17,0 para 0,04**.
+- Teste de regressão em `e2e/hero.spec.ts`: bloqueia os ficheiros JavaScript
+  externos, deixando o script inline do `<head>` correr, e verifica que as
+  frases continuam invisíveis. É a única forma de medir o intervalo entre o
+  primeiro pixel e a hidratação — sem o bloqueio, o Playwright mediria sempre
+  o estado final e o teste passaria sempre.

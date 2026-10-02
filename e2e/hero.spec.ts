@@ -20,6 +20,36 @@ async function scrollToProgress(page: Page, p: number) {
 }
 
 test.describe('Hero scrolltelling', () => {
+  test('as frases não aparecem antes de a animação arrancar', async ({ page }) => {
+    /* Reproduz o F5: o script inline do <head> corre e marca `js`, mas os
+     * ficheiros externos são bloqueados, por isso o GSAP nunca arranca.
+     *
+     * Sem este bloqueio, este teste passaria sempre: a hidratação é tão rápida
+     * que o Playwright mediria sempre o estado final e nunca o intervalo
+     * problemático — aquele entre o primeiro pixel e o primeiro efeito. Foi
+     * nesse intervalo que as três frases apareceram sobrepostas. */
+    await page.route('**/*.{js,mjs}', (route) => route.abort());
+
+    await page.goto('/');
+
+    /* O estado sem JavaScript tem de continuar a ser o mesmo: o palco
+     * visível, com o nome e o contacto. */
+    await expect(page.locator('[data-hero-reveal]')).toBeVisible();
+
+    /* E nada de frases a espreitar. */
+    const opacities = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-hero-beat]')).map(
+        (b) => getComputedStyle(b).opacity,
+      ),
+    );
+    expect(opacities).toEqual(['0', '0', '0']);
+
+    /* O halo também não pode estar aceso sem texto por trás. */
+    expect(
+      await page.evaluate(() => getComputedStyle(document.querySelector('[data-hero-halo]')!).opacity),
+    ).toBe('0');
+  });
+
   test('avança pelos cinco frames pela ordem certa, sem saltos', async ({ page }) => {
     await page.goto('/');
     await scrollToProgress(page, 0);

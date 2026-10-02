@@ -408,8 +408,19 @@
   display: none;
 }
 
+/* Com JavaScript as frases existem, mas escondidas.
+ *
+ * Sem este `opacity: 0` elas ficam visíveis desde o primeiro pixel até o
+ * GSAP arrancar na hidratação — e como as três são `position: absolute`
+ * centradas, apareciam as três ao mesmo tempo, sobrepostas, e depois
+ * desapareciam de repente. Era um flash de texto com todas as frases
+ * empilhadas no centro do ecrã a cada F5.
+ *
+ * O `display: block` continua a ser o que distingue o caminho com script do
+ * caminho sem script, onde não há percurso e as frases não existem. */
 .js .hero-beat {
   display: block;
+  opacity: 0;
 }
 
 /* Com JavaScript, o reveal só aparece quando a timeline o revela. */
