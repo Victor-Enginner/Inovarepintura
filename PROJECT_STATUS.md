@@ -441,3 +441,47 @@ frames mestres aprovados, e fechar o canal de orçamento em produção.
 - O `h1` passou para o hero; o título da secção seguinte desceu para `h2`.
 - Notificação por e-mail de novas submissões continua por configurar no painel
   (Forms → Notifications). **A fazer.**
+
+---
+
+## Ajuste visual — narrativa ao centro e enquadramento do frame 1
+
+**Narrativa do percurso ao centro do ecrã**
+- As frases deixaram de estar ancoradas à base (`bottom` + largura em `ch`) e
+  passaram para um contentor próprio `.hero-story` com `inset: 0` e
+  flex centrado. É o que mantém a frase centrada quando a altura da janela
+  muda — barras do browser, ecrã dobrado, rotação — sem `bottom`, `left`,
+  `margin-top` nem `transform` em píxeis.
+- `pointer-events: none`: não rouba o clique ao conteúdo por baixo.
+- Animação mantida no scrub existente, com os valores pedidos:
+  `opacity 0 → 1`, `y 40 → 0`, `scale .98 → 1`, e saída `opacity 0`, `y -30`.
+- Imagens, frames, progressão do scroll, fonte (Fraunces), pesos, cores, o
+  reveal final, o CTA e o telefone **não foram tocados**.
+- Medido em ecrã real: desvio do centro **0 px** em 1920×1080 e 1440×900,
+  11 px em 390×844 (arredondamento de píxel a DPR 3).
+
+**Contraste da frase centralizada**
+- O centro da fotografia tem luminância 158–170, onde o branco dá 2,6:1 —
+  muito abaixo de AA. Há por isso um halo radial atrás da frase, que segue a
+  curva da própria frase (aparece e desaparece com ela) e desvanece, sem
+  caixa sólida.
+- A intensidade é calibrada por largura e foi medida, não estimada: em desktop
+  a fotografia atrás da frase é escura e 0,62 dá 5,7:1; em ecrã estreito o
+  `object-position` a 32% mostra a faixa mais clara da fachada, e 0,62 ficava
+  a 1,6:1 — daí os 0,85 no breakpoint de 767 px. Ambos passam AA.
+
+**Enquadramento do frame 1**
+- `object-position` de 50% 60% → **50% 45%**. A direção é contra-intuitiva e
+  foi a causa do corte: percentagem maior empurra a imagem para cima e corta
+  **mais** topo. A 60% a janela começava em y=141 no viewport e a marca
+  gravada começa em y=113 — o logo era cortado. A 45% começa em y=106 e o
+  logo fica inteiro. Mantido `32% 45%` no breakpoint de ecrã estreito.
+- `heroMaxScale` de 1,025 → **1,012**. Ancorado à base, o push-in cortava
+  2,5% do topo, que é onde está a marca; a 1,012 corta 1,2% e o logo fica
+  inteiro. Em nenhum dos viewports de validação o topo perde qualquer coisa:
+  medido 0% no início do percurso.
+- Valor único para os 5 frames: o desvio entre eles é de 10 px em 1672, e um
+  offset diferente por frame criaria um salto entre camadas.
+
+**Verificações:** lint ✓ · typecheck ✓ · 29/29 unitários ✓ · build ✓ ·
+e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.

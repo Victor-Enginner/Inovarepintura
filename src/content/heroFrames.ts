@@ -94,5 +94,11 @@ export const heroReveals = [0.12, 0.32, 0.52, 0.72] as const;
 /** Duração de cada crossfade. Sobrepõe as fatias sem nunca abrir um vazio. */
 export const heroFade = 0.12;
 
-/** Ampliação máxima do push-in contínuo. Acima de ~1.03 já parece zoom. */
-export const heroMaxScale = 1.025;
+/** Ampliação máxima do push-in contínuo.
+ *
+ * O valor é limitado pelo topo, não pela aesthetics. Ancorado à base da
+ * imagem (ver `transform-origin` em globals.css), um scale de 1,025 cortava
+ * 2,5% de cima — e a marca gravada no frame 1 está a 12% da altura. A 1,012
+ * corta 1,2% e o logo fica inteiro, mantendo a sensação de que a câmara
+ * avança. Acima de ~1,03 já parece zoom e o topo já não se recupera. */
+export const heroMaxScale = 1.012;

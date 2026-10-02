@@ -133,6 +133,7 @@ export function HeroScroll() {
     const base = section.querySelector<HTMLElement>('[data-hero-base]');
     const reveal = section.querySelector<HTMLElement>('[data-hero-reveal]');
     const beatNodes = Array.from(section.querySelectorAll<HTMLElement>('[data-hero-beat]'));
+    const halo = section.querySelector<HTMLElement>('[data-hero-halo]');
 
     const context = gsap.context(() => {
       /* Push-in contínuo, igual em todas as camadas. Se cada camada tivesse a
@@ -176,20 +177,38 @@ export function HeroScroll() {
         timeline.fromTo(base, { scale: 1 }, { scale: heroMaxScale, duration: 1 }, 0);
       }
 
-      /* Frases: entram e saem dentro da sua fatia, sem Rush de escala. Uma
-       * frase inteira sobre fotografia só fica legível se cresce pouco. */
+      /* Frases: entram e saem dentro da sua fatia. O deslocamento é pequeno e a
+       * escala quase nula — uma frase inteira sobre fotografia só fica
+       * legível se cresce pouco, e o texto tem de parecer escrito na
+       * imagem, não a pousar sobre ela. */
       beatNodes.forEach((node) => {
         const start = Number(node.dataset['heroBeat'] ?? 0);
         const end = Number(node.dataset['heroBeatEnd'] ?? start);
         const fade = Math.min(0.06, (end - start) / 4);
+
         timeline.fromTo(
           node,
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: fade, ease: 'power1.out' },
+          { opacity: 0, y: 40, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1, duration: fade, ease: 'power2.out' },
           start,
         );
-        timeline.to(node, { opacity: 0, y: -12, duration: fade, ease: 'power1.in' }, end - fade);
+        timeline.to(
+          node,
+          { opacity: 0, y: -30, duration: fade, ease: 'power2.in' },
+          end - fade,
+        );
       });
+
+      /* O halo segue exatamente a mesma curva que a frase: existe enquanto a
+       * frase está a ser lida e desaparece com ela. Sem isto, escureceria a
+       * fotografia nos estados em que não há texto nenhum por cima. */
+      if (halo) {
+        heroBeats.forEach((beat) => {
+          const fade = Math.min(0.06, (beat.end - beat.start) / 4);
+          timeline.fromTo(halo, { opacity: 0 }, { opacity: 1, duration: fade, ease: 'power2.out' }, beat.start);
+          timeline.to(halo, { opacity: 0, duration: fade, ease: 'power2.in' }, beat.end - fade);
+        });
+      }
 
       /* Reveal final: aparece já com o frame 5-estável, para a leitura não
        * competir com a última transição. */
@@ -298,11 +317,21 @@ export function HeroScroll() {
           />
         </noscript>
 
-        {/* O véu vive no próprio contentor do texto, em CSS: com uma camada
-         * por cima não existe cor pintada atrás das letras e o verificador de
-         * contraste mede contra o fundo da página em vez do que está mesmo
-         * atrás do texto. */}
-        <div className="hero-copy">
+        {/* Narrativa do percurso: ao centro do ecrã, sobre a casa.
+         *
+         * Fica num contentor próprio, separado do reveal final — que
+         * continua ancorado à base. Alinhar no centro com flex em vez de
+         * `bottom` + `left` é o que garante que continua centrado se a
+         * altura da janela mudar (barras do browser, ecrã dobrado, rotação).
+         * `pointer-events: none` para não roubar cliques ao conteúdo por
+         * baixo. */}
+        <div className="hero-story">
+          {/* Halo atrás da frase, e só enquanto a frase está lá. O centro da
+           * fotografia tem luminância 158–170: texto branco lá em cima dá
+           * 2,6:1, muito abaixo de AA. O halo é radial e desvanece, por isso
+           * escurece o que está por trás das letras sem tapar a casa. */}
+          <div aria-hidden="true" data-hero-halo className="hero-story-halo" />
+
           {heroBeats.map((beat) => (
             <p
               key={beat.text}
@@ -313,7 +342,13 @@ export function HeroScroll() {
               {beat.text}
             </p>
           ))}
+        </div>
 
+        {/* O véu do reveal vive no próprio contentor do texto, em CSS: com
+         * uma camada por cima não existe cor pintada atrás das letras e o
+         * verificador de contraste mede contra o fundo da página em vez do
+         * que está mesmo atrás do texto. */}
+        <div className="hero-copy">
           {/* Reveal final. Marca, promessa e contacto, depois de ~84% do
            * percurso — o resto é a casa final a ficar parada. */}
           <div data-hero-reveal className="hero-reveal">

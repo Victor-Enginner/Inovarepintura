@@ -137,18 +137,29 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Desce o enquadramento: mostra mais da base da casa e das pinceladas
-   * inferiores, menos do céu. Medido nos 5 masters, o desvio entre frames é
-   * de 10px em 1672 — por isso o valor é único para todos. Dar um offset
-   * diferente a cada frame criaria um salto de 0,6% entre camadas, que é
-   * exatamente o que faz uma transformação parecer um slideshow.
+  /* Enquadramento vertical.
    *
-   * Só tem efeito visível em ecrãs mais largos que 16:9: nos viewports de
-   * validação o recorte vertical é de 1px, porque a imagem já é 16:9.
-   * O valor está isolado aqui para se poder mexer num sítio só. */
-  object-position: 50% 60%;
-  /* O push-in cresce a partir da base. Centrado, o scale 1.025 cortava 1,25%
-   * do topo e 1,25% da base — e a base é onde estão as pinceladas. */
+   * `object-position` só tem efeito visível em ecrãs mais largos que 16:9.
+   * Nos viewports de validação (1920×1080, 2560×1440, 3840×2160, 1440×900,
+   * 390×844) o recorte vertical é de 0 a 1 px, porque a imagem já é 16:9.
+   * Numa janela larga e baixa é que há excesso: medido, 131 px a 1920×950 e
+   * 361 px a 2560×1080.
+   *
+   * E o sentido é contra-intuitivo: **percentagem maior empurra a imagem para
+   * CIMA e corta mais topo.** Com 60% a janela começava em y=141 e a marca
+   * gravada no frame 1 começa em y=113 — ou seja, o logo era cortado, que é
+   * precisamente a queixa. A 45% a janela começa em y=106 e o logo fica
+   * inteiro, com o push-in incluído.
+   *
+   * Medido nos 5 masters, o desvio entre frames é de 10 px em 1672 — por isso
+   * o valor é único para todos. Dar um offset diferente a cada frame criaria
+   * um salto de 0,6% entre camadas, que é o que faz uma transformação
+   * parecer um slideshow. */
+  object-position: 50% 45%;
+  /* O push-in cresce a partir da base, para não comer as pinceladas. Foi
+   * reduzido de 1,025 para 1,012 porque ancorado à base ele cortava 2,5% do
+   * topo — e é no topo que está a marca gravada. A 1,012 corta 1,2%: ainda se
+   * vê que a imagem anda, sem levar o logo. */
   transform-origin: 50% 100%;
   transform: translate3d(0, 0, 0);
 }
@@ -163,13 +174,13 @@
  * gravada 24–50%. A 32% a janela cobre 22–48% e traz as duas inteiras. */
 @media (max-aspect-ratio: 3 / 2) {
   .hero-frame {
-    object-position: 40% 60%;
+    object-position: 40% 45%;
   }
 }
 
 @media (max-aspect-ratio: 1 / 1) {
   .hero-frame {
-    object-position: 32% 60%;
+    object-position: 32% 45%;
   }
 }
 
@@ -204,16 +215,77 @@
   );
 }
 
+/* Narrativa do percurso, ao centro do ecrã.
+ *
+ * O alinhamento é do contentor (`inset: 0` + flex centrado), não um `bottom`
+ * ou um `translate` em píxeis: é assim que a frase continua centrada quando
+ * a altura da janela muda — barras do browser que entram e saem, ecrã
+ * dobrado, rotação. `pointer-events: none` para não roubar o clique ao
+ * conteúdo que está por baixo. */
+.hero-story {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Halo atrás da frase. Radial e a desaparecer: escurece o que está por trás
+ * das letras sem pôr uma caixa à volta do texto nem tapar a casa.
+ *
+ * A intensidade é diferente por largura, e não por acaso: em ecrã estreito
+ * o `object-position` a 32% mostra a faixa mais clara da fotografia (a
+ * fachada, luminância 196–206), onde o branco branco dá 2,0:1. Em desktop
+ * a fotografia atrás da frase é bem mais escura e 0,62 já dá mais de 9:1.
+ * Com o mesmo valor nos dois, ou o desktop escurecia a casa a mais, ou o
+ * telemóvel ficava abaixo de AA. Medido em ecrã real, não estimado. */
+.hero-story-halo {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    ellipse 80% 44% at 50% 50%,
+    rgb(3 28 58 / 0.62) 0%,
+    rgb(3 28 58 / 0.58) 62%,
+    rgb(3 28 58 / 0) 95%
+  );
+  opacity: 0;
+}
+
+@media (max-width: 767px) {
+  .hero-story-halo {
+    background-image: radial-gradient(
+      ellipse 80% 44% at 50% 50%,
+      rgb(3 28 58 / 0.85) 0%,
+      rgb(3 28 58 / 0.8) 62%,
+      rgb(3 28 58 / 0) 95%
+    );
+  }
+}
+
 .hero-beat {
   position: absolute;
-  inset-inline: var(--spacing-gutter);
-  bottom: clamp(3rem, 10vh, 5.5rem);
+  max-width: min(900px, 100%);
   margin: 0;
-  max-width: 34ch;
+  padding-inline: 32px;
+  color: #fff;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.4vw, 2.5rem);
-  line-height: 1.15;
-  text-shadow: 0 2px 18px rgb(6 35 74 / 0.85);
+  font-size: clamp(2.4rem, 4.5vw, 5rem);
+  line-height: 1;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow:
+    0 2px 20px rgb(0 0 0 / 0.35),
+    0 1px 4px rgb(0 0 0 / 0.25);
+  transform-origin: 50% 50%;
+}
+
+@media (max-width: 640px) {
+  .hero-beat {
+    padding-inline: 24px;
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
 }
 
 .hero-reveal {
@@ -321,12 +393,12 @@
 /* Sem JavaScript não há progresso nem frases: o hero é o estado inicial da
  * casa com o nome e o contacto já à vista. É o que se vê também com
  * movimento reduzido. */
-.hero-beat {
+.hero-story {
   display: none;
 }
 
-.js .hero-beat {
-  display: block;
+.js .hero-story {
+  display: flex;
 }
 
 .js .hero-reveal {
@@ -342,7 +414,7 @@
     opacity: 1;
   }
 
-  .hero-beat {
+  .hero-story {
     display: none !important;
   }
 }
