@@ -129,7 +129,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -365,5 +365,157 @@ html:not(.js) .hero-pause {
 @media (prefers-reduced-motion: reduce) {
   .hero-video-opt-in {
     display: block;
+  }
+}
+
+/* Cinematic composition: complete panorama, no portrait crop or zoom. */
+.hero-sticky {
+  background: #051c33;
+}
+.hero-media {
+  position: absolute;
+  inset: 0;
+  filter: brightness(0.76) saturate(0.88);
+}
+.hero-headline {
+  font-family: var(--font-sans);
+  font-size: clamp(2.25rem, 5.1vw, 5.5rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+.hero-reveal {
+  max-width: min(1160px, 100%);
+}
+.hero-beat {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+.hero-brand {
+  letter-spacing: 0.22em;
+  margin-bottom: 1.25rem;
+}
+.hero-controls {
+  top: auto;
+  bottom: 1.5rem;
+}
+.hero-skip {
+  border-color: rgb(255 255 255 / 0.3);
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.hero-skip:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+.hero-location {
+  position: absolute;
+  bottom: 2.25rem;
+  left: var(--spacing-gutter);
+  color: #fff;
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.hero-phone {
+  font-size: 0.875rem;
+}
+body:has(.hero-scroll) .site-header {
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  z-index: 40;
+  background: transparent;
+  border-color: rgb(255 255 255 / 0.22);
+}
+body:has(.hero-scroll) .site-header a {
+  color: #fff;
+}
+body:has(.hero-scroll) .site-header nav a {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+body:has(.hero-scroll) .site-header a[data-analytics] {
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: transparent;
+  font-size: 0.75rem;
+}
+body:has(.hero-scroll) .site-header a:focus-visible {
+  outline-color: #fff;
+}
+
+/* On narrow screens the complete film occupies a panorama above the copy.
+ * This preserves the house instead of magnifying 26% of a horizontal frame. */
+@media (max-aspect-ratio: 4 / 5) {
+  .hero-sticky {
+    min-height: 660px;
+  }
+  .hero-media {
+    top: 136px;
+    bottom: auto;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  .hero-stage {
+    top: calc(136px + 100vw * 9 / 16);
+    bottom: 164px;
+  }
+  .hero-headline {
+    font-size: clamp(1.8rem, 7.7vw, 3.25rem);
+  }
+  .hero-beat {
+    font-size: clamp(1.8rem, 8vw, 3.25rem);
+  }
+  .hero-brand {
+    font-size: 0.625rem;
+    margin-bottom: 1rem;
+  }
+  .hero-actions {
+    margin-top: 1.25rem;
+    gap: 0.5rem 1rem;
+  }
+  .hero-cta {
+    min-height: 2.75rem;
+    font-size: 0.8125rem;
+  }
+  .hero-phone {
+    min-height: 2.75rem;
+    font-size: 0.75rem;
+  }
+  .hero-controls {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+  .hero-location {
+    display: none;
+  }
+  .hero-progress {
+    display: none;
+  }
+  body:has(.hero-scroll) .site-header nav a {
+    font-size: 0.625rem;
+    letter-spacing: 0.065em;
+  }
+  body:has(.hero-scroll) .site-header nav ul {
+    gap: 0 1.25rem;
+  }
+  body:has(.hero-scroll) .site-header > div {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 8px;
+    padding-block: 14px;
+  }
+  body:has(.hero-scroll) .site-header nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  body:has(.hero-scroll) .site-header > div > a:last-child {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  body:has(.hero-scroll) .site-header > div > a:first-child {
+    font-size: 1.125rem;
   }
 }

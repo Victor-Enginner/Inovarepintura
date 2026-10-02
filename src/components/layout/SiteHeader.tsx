@@ -19,7 +19,7 @@ const navItems = [
  */
 export function SiteHeader() {
   return (
-    <header className="border-b border-border bg-bg">
+    <header className="site-header border-b border-border bg-bg">
       <Container className="flex flex-wrap items-center gap-x-8 gap-y-3 py-4">
         <a
           href="#conteudo"
@@ -28,7 +28,10 @@ export function SiteHeader() {
           {site.name}
         </a>
 
-        <nav aria-label="Navegação principal" className="order-3 w-full sm:order-none sm:w-auto">
+        <nav
+          aria-label="Navegação principal"
+          className="order-3 w-full sm:order-none sm:w-auto"
+        >
           <ul className="flex flex-wrap gap-x-6 gap-y-1">
             {navItems.map((item) => (
               <li key={item.href}>
@@ -45,7 +48,11 @@ export function SiteHeader() {
 
         {/* Telefone no CTA do cabeçalho: é o canal de resposta mais direta
          * para um visitante que quer falar já. */}
-        <LinkButton href={phone.href} className="ms-auto" data-analytics={phone.analyticsEvent}>
+        <LinkButton
+          href={phone.href}
+          className="ms-auto"
+          data-analytics={phone.analyticsEvent}
+        >
           Ligar
           <span className="hidden sm:inline">: {phone.label}</span>
         </LinkButton>

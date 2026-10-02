@@ -127,29 +127,31 @@ export function HeroScroll() {
       className="hero-scroll relative"
     >
       <div className="hero-sticky sticky top-0 h-svh overflow-hidden bg-navy-900">
-        {/* Poster is also the no-JS, failed-autoplay and reduced-motion fallback. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          data-hero-base
-          src="/hero/inovare/renovation-poster.webp"
-          width={1920}
-          height={1080}
-          alt="Cena ilustrativa da renovação de uma moradia."
-          fetchPriority="high"
-          className="hero-frame"
-        />
-        <video
-          ref={videoRef}
-          data-hero-video
-          className={`hero-frame hero-video${manualPlayback ? ' hero-video-opt-in' : ''}`}
-          poster="/hero/inovare/renovation-poster.webp"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          aria-hidden="true"
-        />
+        <div className="hero-media">
+          {/* Poster is also the no-JS, failed-autoplay and reduced-motion fallback. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            data-hero-base
+            src="/hero/inovare/renovation-poster.webp"
+            width={1920}
+            height={1080}
+            alt="Cena ilustrativa da renovação de uma moradia."
+            fetchPriority="high"
+            className="hero-frame"
+          />
+          <video
+            ref={videoRef}
+            data-hero-video
+            className={`hero-frame hero-video${manualPlayback ? ' hero-video-opt-in' : ''}`}
+            poster="/hero/inovare/renovation-poster.webp"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="none"
+            aria-hidden="true"
+          />
+        </div>
         <div className="hero-stage">
           {/* Narrativa HTML independente do vídeo. */}
 
@@ -184,6 +186,9 @@ export function HeroScroll() {
 
         {/* Controlo sempre presente: em movimento reduzido a secção é um
          * ecrã só e a âncora continua a ser a saída natural para o conteúdo. */}
+        <p className="hero-location" aria-hidden="true">
+          Olhão · Algarve · Portugal
+        </p>
         <div className="hero-controls on-dark">
           <div className="hero-progress" role="presentation" aria-hidden="true">
             <div data-hero-bar className="hero-progress-bar" />

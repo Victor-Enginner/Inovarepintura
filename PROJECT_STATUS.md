@@ -549,3 +549,11 @@ e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.
 - Deploy 43b02de confirmado Published no Netlify, 02/10/2026, 07:34 (São Paulo).
 - Chrome real do utilizador anuncia prefers-reduced-motion: reduce. Acrescentada reprodução manual para este modo, mantendo o poster como estado inicial e a narrativa num único ecrã.
 - Reprodução manual validada: lint e build com tipos passaram; 14 testes do hero aprovados em desktop/mobile, incluindo reproduzir/pausar com movimento reduzido.
+
+
+### Enquadramento panorâmico e direção visual — 02/10/2026
+- Pedido seguinte: o cliente identificou zoom/recorte excessivo e indicou White House e EP Pinturas como referências visuais. Inspecionadas no Chrome real.
+- Vídeo agora usa object-fit: contain. A variante móvel foi substituída por 1280×720 sem recorte (2,1 MB); ambas preservam a composição horizontal completa.
+- Em ecrã vertical, panorama acima da narrativa no mesmo hero sticky; apenas as frases acompanham o scroll. Cabeçalho integrado, título sans e controlos discretos. Contraste uniforme no vídeo, sem halo radial.
+- Windows do utilizador: Windows 10 Pro; Chrome reporta reduced motion. Orientado a ativar Mostrar animações no Windows; nenhuma configuração do sistema alterada. Reprodução manual continua disponível.
+- Verificação: npm run verify passou, 29 unitários e build; 16 testes de hero passaram. Teclado, axe e visual móvel repetidos em produção após um teste localizar também o rodapé do painel de desenvolvimento.

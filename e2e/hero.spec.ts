@@ -176,3 +176,20 @@ test.describe('Hero scrolltelling', () => {
     await context.close();
   });
 });
+
+// The complete frame must remain visible on both portrait and landscape screens.
+test('vídeo conserva a proporção panorâmica sem zoom ou corte', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => {
+    const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+    return video && video.videoWidth > 0;
+  });
+  const video = page.locator('[data-hero-video]');
+  await expect(video).toHaveCSS('object-fit', 'contain');
+  const ratio = await video.evaluate(
+    (el: HTMLVideoElement) => el.videoWidth / el.videoHeight,
+  );
+  expect(ratio).toBeCloseTo(16 / 9, 2);
+  const box = await page.locator('.hero-media').boundingBox();
+  expect(box!.width).toBeLessThanOrEqual((page.viewportSize()?.width ?? 0) + 1);
+});
