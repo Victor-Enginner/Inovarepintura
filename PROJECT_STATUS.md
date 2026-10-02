@@ -370,3 +370,74 @@ canonical/Open Graph/sitemap corretos.
   (8 rotas) · e2e 42 ✓ / 0 ✗ (nova spec `contact.spec.ts`, 5 testes).
 - Recusado (registado): estatísticas inventadas, canais sociais
   inexistentes, paleta do site de referência.
+
+---
+
+## Sprint 5 — Hero scrolltelling cinematográfico (concluída)
+
+**Objetivo:** substituir a abertura em vídeo por um scrolltelling de cinco
+frames mestres aprovados, e fechar o canal de orçamento em produção.
+
+**Entregue**
+- `assets/generated/hero-scroll/` — os 5 masters PNG (1672×941) e o MP4 de
+  fallback, verificados por SHA-256 contra o pacote de origem (29/29 OK).
+- `scripts/build-hero-assets.mjs` — derivados WebP q90 em 960/1280/1440/1672,
+  sem upscale, sem AVIF, sem JPEG. 20 ficheiros, 5,6 MB.
+- `src/content/heroFrames.ts` + `src/components/hero/HeroScroll.tsx` —
+  scrolltelling com GSAP ScrollTrigger `scrub: 1`, pin por `position: sticky`
+  (não `pin: true`, que conflituaria), camadas reveladas por opacidade sobre
+  uma base que nunca sai, carregamento em cadeia dos frames 2–5, 500vh
+  desktop / 360svh estreito, movimento reduzido e sem JavaScript com estado
+  próprio.
+- `object-position` corrigido (ver decisões abaixo), `transform-origin` na base.
+- O `CinematicIntro` e os seus 9,9 MB em `public/cutscene/` **mantêm-se** como
+  reversão (ADR-006 continua válido como histórico).
+- `e2e/cutscene.spec.ts` substituído por `e2e/hero.spec.ts` (6 testes).
+
+**Decisões**
+- **GSAP 3.15.0 instalado** por decisão do cliente, revogando a conclusão de
+  ADR-006. ADR-008 regista a revogação e o porquê. Risco aceite: ~30 KB gzip
+  no JS inicial da home, que passa a depender de revisão do orçamento §15.
+- **Sem upscale.** Os masters têm 1672 px; os derivados de 2560/3840 pedidos
+  no briefing seriam pixels inventados (§11). O limite fica documentado como
+  gargalo, não escondido.
+- **AVIF descartado:** os AVIF do pacote pesavam ~5× o WebP (14,8 MB vs 2,87 MB).
+- **q90 e não q96:** medido, +0,7 dB de PSNR por +34% de peso. Ver
+  `docs/07-HERO-ASSETS.md`.
+- **Contraste do hero medido por píxeis, não pelo axe.** Com texto sobre
+  fotografia o axe não compõe gradientes e acusa um contraste inexistente
+  (17:1 medidos no ecrã real). A regra só é desligada para `.hero-copy`, com
+  o porquê escrito no teste.
+- **object-position:** `50% 60%` em ecrãs largos — pedido do cliente, com
+  efeito real só acima de 16:9 (nos viewports de validação o recorte vertical
+  é de 0–1 px). `32% 60%` em formato ≤ 1:1, onde o corte real é **lateral**:
+  o `cover` mostrava só 26% da largura e levava fora a fachada (0–35%) e a
+  marca gravada no frame 1 (24–50%).
+- **transform-origin: 50% 100%** — o push-in de 1,025× cortava 1,25% da base,
+  onde estão as pinceladas.
+
+**Verificações**
+- lint ✓ · typecheck ✓ · 29/29 unitários ✓ · build ✓
+- e2e: 44 ✓ / 0 ✗ (desktop 25 ✓ + mobile, 10 skip por desenho de projeto)
+- CLS **0** em 1920×1080, 2560×1440, 3840×2160, 1440×900, 390×844, 430×932
+- sequência de frames confirmada frame a frame nos 6 viewports: nenhum salto,
+  nenhum ecrã vazio, nenhum preto
+
+**Produção**
+- DNS `inovarepintura.com` → `dns1-4.p01.nsone.net` (Netlify). **O problema de
+  nameservers de estacionamento da Hostinger está resolvido.**
+- HTTPS 200, TLS válido, `www` → apex 301.
+- Deploy `eb36c88` `ready`; republicado pela CLI após a ativação do form
+  detection. Hero e assets 200 em produção.
+- **Formulário operacional:** deteção ligada (`ignore_html_forms = false`),
+  form `orcamento` registado com os 5 campos e honeypot ativo, submissão real
+  de teste aceite (HTTP 200 → "Thank you!"), `submission_count = 1`.
+
+**Riscos / limitações**
+- Masters de 1672 px: em 2560×1440 o browser amplia 1,53× e em 3840×2160
+  2,30×. Saída: reexportar os masters a partir da origem com ≥2560 px.
+- Frame 1 nativo com 450 KB ultrapassa o orçamento de 250 KB do §15. O
+  candidato de 960 px (187 KB) entra no LCP em ecrãs estreitos.
+- O `h1` passou para o hero; o título da secção seguinte desceu para `h2`.
+- Notificação por e-mail de novas submissões continua por configurar no painel
+  (Forms → Notifications). **A fazer.**
