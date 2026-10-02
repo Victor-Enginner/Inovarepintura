@@ -4,23 +4,21 @@ import { test, expect } from '@playwright/test';
 test.describe('Verificação visual em telemóvel', () => {
   test.skip(({ isMobile }) => !isMobile, 'Só corre em mobile');
 
-  test('cutscene usa renderer de frames (não vídeo) em ecrã estreito', async ({ page }) => {
+  test('hero usa variantes móveis e não pede ficheiros de desktop', async ({ page }) => {
     await page.goto('/');
 
-    /* Aguardar que a hidratação troque o renderer de 'none' para 'frames'. */
+    /* Em ecrã estreito o `cover` corta a largura: é o `srcset` que tem de
+     * escolher a variante móvel, nunca a de 1672px. */
     await page.waitForFunction(() => {
       const section = document.querySelector('section[aria-label*="transformação"]');
-      return section?.querySelector('img[src*="/cutscene/mobile/"]') !== null;
+      return section?.querySelector('img[data-hero-base]') !== null;
     });
 
-    /* Em ecrã estreito, o renderer deve ser 'frames' — não deve existir <video>. */
-    const video = page.locator('section[aria-label*="transformação"] video');
-    await expect(video).not.toBeVisible();
-
-    /* Deve existir uma sequência de imagens WebP. */
-    const frames = page.locator('section[aria-label*="transformação"] img[src*="/cutscene/mobile/"]');
-    const count = await frames.count();
-    expect(count).toBeGreaterThan(0);
+    const base = page.locator('[data-hero-base]');
+    await expect(base).toBeVisible();
+    const src = await base.evaluate((img: HTMLImageElement) => img.currentSrc);
+    expect(src).toContain('/hero/inovare/frame-01');
+    expect(src).not.toMatch(/frame-01\.webp$/);
   });
 
   test('link "Saltar introdução" é alcançável e funciona em ecrã estreito', async ({

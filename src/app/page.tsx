@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { CinematicIntro } from '@/components/cinematic/CinematicIntro';
+import { HeroScroll } from '@/components/hero/HeroScroll';
 import { RealWorkGallery } from '@/components/gallery/RealWorkGallery';
 import { QuoteForm } from '@/components/contact/QuoteForm';
 import {
@@ -34,9 +34,12 @@ import {
   publishableImages,
 } from '@/content/gallery';
 
-/* A ordem das secções segue o CLAUDE.md §5. CinematicIntro e PaintReveal
- * entram na Sprint 2 (ADR-006); RealWorkGallery e FeaturedBeforeAfter na
- * Sprint 4. As âncoras da navegação já resolvem para destinos reais. */
+/* A ordem das secções segue o CLAUDE.md §5. O hero é o scrolltelling dos
+ * cinco frames mestres (ADR-008); RealWorkGallery e FeaturedBeforeAfter na
+ * Sprint 4. As âncoras da navegação já resolvem para destinos reais.
+ *
+ * O h1 está no hero, no reveal final. Por isso o título desta secção é um h2:
+ * dois h1 na mesma página seriam um salto artificial na árvore de headings. */
 
 function PrimaryHero() {
   return (
@@ -44,7 +47,7 @@ function PrimaryHero() {
       <Container className="grid items-center gap-12 lg:grid-cols-2">
         <div>
           <Eyebrow>Pintura, reparação e remodelação em Olhão</Eyebrow>
-          <Heading level={1} size="4xl" className="mt-4 text-navy-900">
+          <Heading level={2} size="4xl" className="mt-4 text-navy-900">
             Transformamos espaços. Protegemos o que é seu.
           </Heading>
           <Prose className="mt-6">
@@ -374,7 +377,7 @@ function FinalCta() {
 export default function HomePage() {
   return (
     <>
-      <CinematicIntro />
+      <HeroScroll />
       <PrimaryHero />
       <ProofStrip />
       <Services />

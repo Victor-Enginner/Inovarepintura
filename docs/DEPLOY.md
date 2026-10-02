@@ -1,15 +1,16 @@
 # Deploy — Inovare Pintura
 
 Runbook de deploy e CI/CD. **Fluxo atual: push para `main` → CI valida →
-Netlify publica automaticamente.** Publicar pelo CLI é o plano B.
+Netlify publica automaticamente.** O Netlify CLI está instalado e a sessão
+foi validada. Publicar pelo CLI é o plano B.
 
 ## Como funciona o pipeline (resumo)
 
 1. `git push` para `main` (a partir do teu computador);
 2. **GitHub Actions** corre o Gate D completo (lint, typecheck, testes,
    build, e2e) — `.github/workflows/ci.yml`;
-3. **Netlify** deteta o push, faz `npm run build` com `netlify.toml` e
-   publica sozinha;
+3. **Netlify** deteta o push, corre o comando `npm run verify` declarado em
+   `netlify.toml` (lint, types, unitários, build Next) e publica sozinha;
 4. Se o CI falhar, o deploy da Netlify ainda acontece (são sistemas
    independentes), por isso o hábito é: olhar o ✗ no GitHub antes de
    considerar a alteração publicada de facto. Para hard block, usar PRs.
@@ -33,20 +34,21 @@ Feito uma única vez, na conta do cliente (ou tua, se gerires):
 
 Em *Site configuration → Environment variables* (ou via CLI):
 
+O domínio de produção é `https://inovarepintura.com`. A variável
+`NEXT_PUBLIC_SITE_URL` já está definida e foi confirmada via CLI. Verificar
+sem expor o valor em logs desnecessários:
+
 ```bash
-netlify env:set NEXT_PUBLIC_SITE_URL https://inovare-pintura.netlify.app
+netlify env:get NEXT_PUBLIC_SITE_URL --context production
 ```
 
-**Sem isto o site anuncia um domínio que não é o dele** no canonical, no
-Open Graph e no sitemap — confunde indexação desde o primeiro dia.
-
-Quando o domínio próprio ficar ativo, repetir com o novo endereço e
-republicar (ver §Domínio). É a única alteração necessária.
+Quando houver uma migração de domínio futura, atualizar essa variável e
+reconstruir o site antes de considerar a migração completa.
 
 ## 2. Deploy de rascunho (quando precisares de ver antes de publicar)
 
 ```bash
-npx netlify-cli deploy --build
+netlify deploy --build
 ```
 
 Devolve um URL temporário (`*.netlify.app` com hash) que não afeta produção
@@ -55,77 +57,79 @@ nem é indexado.
 ## 3. Publicação manual (plano B)
 
 ```bash
-npm run verify && npx playwright test   # Gate D local
-npx netlify-cli deploy --build --prod
+npm run verify && npm run test:e2e      # Gate D local
+netlify deploy --build --prod
 ```
 
-## 4. Domínio próprio (Hostinger) — passo a passo
+## 4. Domínio próprio — estado atual e manutenção
 
-Pré-requisito: contas na Hostinger e na Netlify. O código já está pronto —
-nada disto exige alterações no site além da env var.
+O domínio `inovarepintura.com` foi comprado na Hostinger, delegado para
+Netlify DNS, validado com SSL e definido como primário. Nameservers e
+redirecionamentos já estão configurados; a receita abaixo só se aplica se
+fizeres uma migração futura ou adicionares outro domínio.
 
-### 4.1 Comprar
-
-Na Hostinger, comprar o domínio — sugestão: `inovarepintura.pt` (o `.pt`
-rege-se por regras próprias de registo; a Hostinger trata do processo).
+### 4.1 Adicionar um domínio futuro
 
 ### 4.2 Apontar o domínio à Netlify
 
 Na **Netlify** → *Domain management → Add a domain / Add a subdomain site*
-→ escrever `inovarepintura.pt` → confirmar como domínio primário quando
-perguntado. A Netlify mostra os registos DNS exatos.
+→ adicionar o novo domínio. Não alteres o primário `inovarepintura.com` até
+o novo domínio estar validado com DNS e HTTPS. A Netlify indica a estratégia
+DNS apropriada; para o domínio existente já se usa Netlify DNS.
 
 Na **Hostinger** (hPanel → Domains → DNS/Nameservers), apontar:
 
-| Tipo | Nome | Valor | TTL |
-|---|---|---|---|
-| `A` | `@` (raiz) | `75.2.60.5` | auto |
-| `CNAME` | `www` | `inovare-pintura.netlify.app` | auto |
+Segue os valores que o painel da Netlify indicar para o novo domínio.
+Para o domínio atual, já estão delegados os nameservers Netlify DNS; os
+registos autoritativos devem ser geridos na Netlify, não no DNS da Hostinger.
 
-> Estes valores podem mudar — **usar sempre os que o painel da Netlify
-> mostra na altura**. Em alternativa à tabela, a Netlify aceita os
-> nameservers da Hostinger trocados pelos dela (`dns1.p0X.nsone.net` etc.),
-> e nesse caso gere o DNS todo sozinha (mais simples de manter).
-
-Ativar **"Redirect to primary domain"** (força `www` → raiz ou vice-versa)
-para não haver conteúdo duplicado aos olhos do Google.
-
-O SSL (Let's Encrypt) é emitido automaticamente quando o DNS propagar
-(minutos a poucas horas). Não há custo nem configuração extra.
+Ativar um único domínio primário e redirecionar os aliases para ele.
+A Netlify emite SSL automaticamente depois de validar DNS; verificar HTTPS
+antes de apontar tráfego ou anunciar o endereço.
 
 ### 4.3 Atualizar a env var e republicar
 
 ```bash
-netlify env:set NEXT_PUBLIC_SITE_URL https://inovarepintura.pt
+netlify env:set NEXT_PUBLIC_SITE_URL https://inovarepintura.com
 ```
 
 Depois disparar um build (Netlify → Deploys → *Trigger deploy*) — ou fazer
-qualquer `git push`, que já o faz. Isto corrige canonical, Open Graph e
-sitemap para o novo domínio.
+`git push` depois de verificar que o deploy contínuo está ligado. Isto atualiza
+canonical, Open Graph e sitemap para o domínio configurado.
 
 ### 4.4 Verificação pós-domínio
 
 ```bash
-curl -s https://inovarepintura.pt/robots.txt
-curl -s https://inovarepintura.pt/sitemap.xml
-curl -sI https://inovarepintura.pt | head -5   # esperar 200 + https
+curl -s https://inovarepintura.com/robots.txt
+curl -s https://inovarepintura.com/sitemap.xml
+curl -sI https://inovarepintura.com | head -5   # esperar 200 + https
 ```
 
 E confirmar no HTML da home: canonical e `og:url` apontam para
-`https://inovarepintura.pt`. Depois:
+`https://inovarepintura.com`. Depois:
 
-1. Google Search Console → adicionar propriedade do novo domínio →
+1. Google Search Console → adicionar/verificar a propriedade do domínio novo →
    submeter `sitemap.xml` → pedir indexação;
 2. Google Business Profile → atualizar o website do perfil para o novo
    endereço;
-3. Redirecionamento do domínio antigo: enquanto os dois estiverem ativos, a
-   Netlify trata do redirect se `inovare-pintura.netlify.app` continuar
-   ligado ao site (auto).
+3. Manter redirects dos domínios antigos para o primário durante a migração,
+   para não perder links existentes.
 
-### 4.5 Notificações do formulário (obrigatório com o formulário ativo)
+### 4.5 Deteção e notificações do formulário (obrigatório)
 
-As submissões de "Pedir orçamento" ficam em **Netlify → Forms**
-(listagem e detalhe). Para chegarem ao e-mail do cliente:
+**Antes do deploy:** Netlify → **Forms** → confirmar que *form detection*
+está **enabled**. O HTML de deteção e o alvo de POST vivem em
+`public/orcamento-enviado.html`; não remover nem mover para `src/app/`. O custo
+varia por plano: nas contas atuais baseadas em créditos, Forms é gratuito e
+ilimitado; planos legacy podem ter cobrança por níveis/volume. Confirma em
+Forms → Usage/billing da equipa antes de assumir o custo.
+O Next.js + OpenNext adapter v5 exige este ficheiro estático. O JSX não pode
+conter `data-netlify`/`netlify-honeypot` — isso causa falha intencional do
+plugin durante o build. Depois do deploy, o formulário `orcamento` deve
+aparecer em **Netlify → Forms**. Se não aparecer, não considerar o formulário
+operacional nem anunciar que recebe pedidos.
+
+Para os pedidos chegarem ao e-mail do cliente:
 
 1. **Netlify** → *Forms* → *Form notifications* → **Add notification** →
    *Email notification*;
@@ -133,11 +137,15 @@ As submissões de "Pedir orçamento" ficam em **Netlify → Forms**
    destino: o e-mail do cliente;
 3. Testar com uma submissão real e confirmar que chegou (ver spam).
 
-Sem isto, os pedidos acumulam-se no painel sem ninguém saber.
+Depois, verificar em **Forms → Submissions** que o registo foi guardado e
+que a notificação chegou ao endereço certo. A resposta AJAX do browser, por
+si só, não prova que o formulário foi registado — só o painel e a submissão
+real confirmam isso. Sem notificação, os pedidos acumulam-se no painel sem
+ninguém saber.
 
 ### 4.6 E-mail profissional (opcional, recomendado)
 
-Com o domínio na Hostinger, ativar `geral@inovarepintura.pt` (planos de
+Com o domínio na Hostinger, ativar `geral@inovarepintura.com` (planos de
 e-mail da própria Hostinger, ou encaminhar para o Gmail atual). Se ativar,
 atualizar `data/project-data.json` (campo `contact.email*`) e republicar —
 os testes de conteúdo garantem consistência.

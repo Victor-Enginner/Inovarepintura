@@ -1,0 +1,121 @@
+{
+  "quality": 90,
+  "frames": [
+    {
+      "id": "frame-01",
+      "master": "assets/generated/hero-scroll/01-hero-branding.png",
+      "native": 1672,
+      "variants": [
+        {
+          "src": "/hero/inovare/frame-01-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/hero/inovare/frame-01-mobile.webp",
+          "width": 1280
+        },
+        {
+          "src": "/hero/inovare/frame-01-1440.webp",
+          "width": 1440
+        },
+        {
+          "src": "/hero/inovare/frame-01.webp",
+          "width": 1672
+        }
+      ]
+    },
+    {
+      "id": "frame-02",
+      "master": "assets/generated/hero-scroll/02-preparation.png",
+      "native": 1672,
+      "variants": [
+        {
+          "src": "/hero/inovare/frame-02-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/hero/inovare/frame-02-mobile.webp",
+          "width": 1280
+        },
+        {
+          "src": "/hero/inovare/frame-02-1440.webp",
+          "width": 1440
+        },
+        {
+          "src": "/hero/inovare/frame-02.webp",
+          "width": 1672
+        }
+      ]
+    },
+    {
+      "id": "frame-03",
+      "master": "assets/generated/hero-scroll/03-paint-start.png",
+      "native": 1672,
+      "variants": [
+        {
+          "src": "/hero/inovare/frame-03-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/hero/inovare/frame-03-mobile.webp",
+          "width": 1280
+        },
+        {
+          "src": "/hero/inovare/frame-03-1440.webp",
+          "width": 1440
+        },
+        {
+          "src": "/hero/inovare/frame-03.webp",
+          "width": 1672
+        }
+      ]
+    },
+    {
+      "id": "frame-04",
+      "master": "assets/generated/hero-scroll/04-paint-advanced.png",
+      "native": 1672,
+      "variants": [
+        {
+          "src": "/hero/inovare/frame-04-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/hero/inovare/frame-04-mobile.webp",
+          "width": 1280
+        },
+        {
+          "src": "/hero/inovare/frame-04-1440.webp",
+          "width": 1440
+        },
+        {
+          "src": "/hero/inovare/frame-04.webp",
+          "width": 1672
+        }
+      ]
+    },
+    {
+      "id": "frame-05",
+      "master": "assets/generated/hero-scroll/05-finished-house.png",
+      "native": 1672,
+      "variants": [
+        {
+          "src": "/hero/inovare/frame-05-960.webp",
+          "width": 960
+        },
+        {
+          "src": "/hero/inovare/frame-05-mobile.webp",
+          "width": 1280
+        },
+        {
+          "src": "/hero/inovare/frame-05-1440.webp",
+          "width": 1440
+        },
+        {
+          "src": "/hero/inovare/frame-05.webp",
+          "width": 1672
+        }
+      ]
+    }
+  ],
+  "video": "/hero/inovare/inovare-hero-fallback-1080p.mp4"
+}

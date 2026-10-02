@@ -10,17 +10,16 @@ import {
 import { LinkButton } from '@/components/ui/Button';
 import { contactChannels, postalAddress, site } from '@/content/site';
 
-/* Política de privacidade em pt-PT (solicitada pelo cliente em 2026-09-30).
+/* Política de privacidade em pt-PT (revista para o formulário em 2026-10-01).
  *
- * Regra do §9: só afirmamos o que é verificável no código. Este site não tem
- * formulários, não instala cookies e não carrega scripts de terceiros — por
- * isso a política diz exatamente isso. Quando entrar analytics ou um
- * formulário, esta página tem de ser revista ANTES do lançamento. */
+ * Regra do §9: só afirmamos o que é verificável no código. Descreve os dados
+ * do formulário Netlify e os canais externos sem prometer prazos de retenção
+ * que o responsável ainda não definiu. A copy não substitui revisão jurídica. */
 
 export const metadata: Metadata = {
   title: 'Política de Privacidade | Inovare Pintura',
   description:
-    'Como a Inovare Pintura trata os dados de quem visita o site: sem cookies, apenas os dados do pedido de orçamento, e sem partilha com terceiros.',
+    'Como a Inovare Pintura trata os dados do pedido de orçamento, incluindo o processamento do formulário pela Netlify.',
   alternates: { canonical: '/privacidade' },
 };
 
@@ -32,7 +31,7 @@ export default function PrivacyPage() {
         <Heading level={1} size="3xl" id="privacidade-titulo" className="mt-4 text-navy-900">
           Política de privacidade
         </Heading>
-        <Prose className="mt-4 text-text-muted">Última atualização: setembro de 2026.</Prose>
+        <Prose className="mt-4 text-text-muted">Última atualização: outubro de 2026.</Prose>
 
         <div className="mt-12 space-y-10">
           <section aria-labelledby="pp-responsavel">
@@ -51,19 +50,22 @@ export default function PrivacyPage() {
               Que dados recolhemos
             </Heading>
             <Prose className="mt-4">
-              Navegar pelas páginas não deixa registos associados a si: não são
-              instalados cookies e não são utilizadas ferramentas de medição de
-              audiência.
+              Não usamos cookies de análise nem ferramentas de medição de
+              audiência. O serviço de alojamento pode processar registos técnicos
+              de acesso necessários à entrega e segurança do site, conforme
+              descrito abaixo.
             </Prose>
             <Prose className="mt-4">
-              O único dado pessoal que nos chega através do site é o que escreve
-              no formulário de pedido de orçamento: nome, telefone, tipo de
-              trabalho e mensagem. Usamos esses dados apenas para responder ao
-              seu pedido — por telefone ou pelo canal que indicar. O envio fica
-              guardado no sistema de formulários do alojamento e na caixa de
-              correio que recebe a notificação; apagamos quando o pedido estiver
-              concluído ou quando pedir. Pode pedir acesso, retificação ou
-              eliminação desses dados a qualquer momento pelos contactos acima.
+              Se preencher o formulário de pedido de orçamento, recebemos o
+              nome, o telefone, o tipo de trabalho e, se a escrever, a mensagem.
+              Usamos estes dados para analisar e responder ao pedido que nos
+              enviou. A submissão é processada e armazenada pela Netlify, que
+              presta o serviço de alojamento e gestão do formulário; se forem
+              ativadas notificações, uma cópia poderá também ficar na caixa de
+              correio de destino. O responsável deve limitar o acesso e conservar
+              os dados apenas pelo período necessário à gestão do pedido e às
+              obrigações legais aplicáveis. Pode pedir acesso, retificação ou
+              eliminação através dos contactos indicados nesta página.
             </Prose>
             <Prose className="mt-4">
               Como qualquer website, o alojamento pode registar dados técnicos
@@ -92,9 +94,11 @@ export default function PrivacyPage() {
               Serviços externos
             </Heading>
             <Prose className="mt-4">
-              O site não carrega publicidade, não incorpora redes sociais e não
-              partilha informação com empresas de marketing. As fotografias e os
-              conteúdos são servidos diretamente pelo alojamento do site.
+              O site não carrega publicidade nem ferramentas de marketing. O
+              formulário é processado pela Netlify, fornecedor de alojamento e
+              gestão de formulários, de acordo com os respetivos termos e política
+              de privacidade. Os links de telefone, WhatsApp, e-mail e Instagram
+              abrem serviços externos apenas quando os escolhe.
             </Prose>
           </section>
 
@@ -116,9 +120,9 @@ export default function PrivacyPage() {
               Alterações a esta política
             </Heading>
             <Prose className="mt-4">
-              Se o site passar a incluir funcionalidades que envolvam dados pessoais
-              — por exemplo, um formulário de pedido de orçamento ou estatísticas de
-              visita — esta página será atualizada e datada antes de tal acontecer.
+              Esta política será revista se mudarem os dados recolhidos, os
+              fornecedores ou as finalidades do tratamento. A data de atualização
+              no início da página será alterada nessa altura.
             </Prose>
           </section>
 

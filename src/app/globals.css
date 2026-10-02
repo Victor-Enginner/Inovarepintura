@@ -106,3 +106,243 @@
 .skip-link:focus-visible {
   transform: translateY(0);
 }
+
+/* ── Hero scrolltelling ──────────────────────────────────────────────────
+ * Fora de @layer de propósito: estas regras têm de vencer o Tailwind
+ * (mesma especificidade, e o comportamento sem JavaScript depende delas).
+ *
+ * A altura do percurso (500vh) só existe quando há JavaScript. A classe
+ * `js` é posta no <html> por um script inline no <head>, antes do primeiro
+ * pixel, por isso não há salto. Sem ela — e com movimento reduzido — a secção
+ * é um hero estático de um ecrã: conteúdo completo, zero código.
+ */
+
+.hero-scroll {
+  min-height: 100svh;
+}
+
+.js .hero-scroll {
+  min-height: 500svh;
+}
+
+@media (max-width: 1023px) {
+  .js .hero-scroll {
+    min-height: 360svh;
+  }
+}
+
+.hero-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Desce o enquadramento: mostra mais da base da casa e das pinceladas
+   * inferiores, menos do céu. Medido nos 5 masters, o desvio entre frames é
+   * de 10px em 1672 — por isso o valor é único para todos. Dar um offset
+   * diferente a cada frame criaria um salto de 0,6% entre camadas, que é
+   * exatamente o que faz uma transformação parecer um slideshow.
+   *
+   * Só tem efeito visível em ecrãs mais largos que 16:9: nos viewports de
+   * validação o recorte vertical é de 1px, porque a imagem já é 16:9.
+   * O valor está isolado aqui para se poder mexer num sítio só. */
+  object-position: 50% 60%;
+  /* O push-in cresce a partir da base. Centrado, o scale 1.025 cortava 1,25%
+   * do topo e 1,25% da base — e a base é onde estão as pinceladas. */
+  transform-origin: 50% 100%;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Em ecrã estreito o `cover` funciona ao contrário: a altura enche e é a
+ * largura que é cortada, ficando só 26% da imagem visível. O corte lateral
+ * é que levava a base da casa e a marca gravada no primeiro frame fora de
+ * quadro. O deslocamento é por forma de tela: quanto mais alta a janela em
+ * relação à largura, mais para a esquerda é preciso olhar.
+ *
+ * Medido no master (1672px): a fachada ocupa 0–35% da largura e a marca
+ * gravada 24–50%. A 32% a janela cobre 22–48% e traz as duas inteiras. */
+@media (max-aspect-ratio: 3 / 2) {
+  .hero-frame {
+    object-position: 40% 60%;
+  }
+}
+
+@media (max-aspect-ratio: 1 / 1) {
+  .hero-frame {
+    object-position: 32% 60%;
+  }
+}
+
+/* As camadas 2–5 só existem com JavaScript e só entram por opacidade. */
+.hero-frame[data-hero-layer] {
+  opacity: 0;
+}
+
+/* Véu. Medido nas fotografias — a faixa inferior tem luminância 100–118 e a
+ * faixa central 158–170. Texto branco sobre a zona central reprova o
+ * contraste AA, por isso o texto vive na faixa baixa.
+ *
+ * O gradiente está no próprio contentor do texto, não numa camada por cima.
+ * A diferença não é cosmética: com uma camada por cima, não existe nenhuma
+ * cor pintada por trás do texto e o verificador automático de acessibilidade
+ * só consegue compará-la com o fundo da página — claro — e accuses um
+ * contraste que não existe. Com o fundo no próprio elemento, a medição é
+ * feita sobre o que está mesmo atrás das letras. */
+.hero-copy {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding-inline: var(--spacing-gutter);
+  padding-bottom: clamp(3rem, 10vh, 5.5rem);
+  color: var(--color-text-inverse);
+  background-image: linear-gradient(
+    to top,
+    rgb(6 35 74 / 0.94) 0%,
+    rgb(6 35 74 / 0.88) 30%,
+    rgb(6 35 74 / 0.6) 62%,
+    rgb(6 35 74 / 0) 100%
+  );
+}
+
+.hero-beat {
+  position: absolute;
+  inset-inline: var(--spacing-gutter);
+  bottom: clamp(3rem, 10vh, 5.5rem);
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+  line-height: 1.15;
+  text-shadow: 0 2px 18px rgb(6 35 74 / 0.85);
+}
+
+.hero-reveal {
+  max-width: 60ch;
+}
+
+.hero-brand {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.hero-headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5.4vw, 3.75rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.hero-cta {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  border-radius: var(--radius-md);
+  background-color: var(--color-mineral-50);
+  color: var(--color-navy-900);
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hero-cta:hover {
+  background-color: #fff;
+}
+
+.hero-phone {
+  min-height: 3rem;
+  align-content: center;
+  color: var(--color-text-inverse);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.hero-controls {
+  position: absolute;
+  top: 1.5rem;
+  right: var(--spacing-gutter);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero-progress {
+  display: none;
+  width: 6rem;
+  height: 0.25rem;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background-color: rgb(246 244 239 / 0.3);
+}
+
+.hero-progress-bar {
+  height: 100%;
+  background-color: var(--color-teal-500);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.hero-skip {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border: 1px solid rgb(246 244 239 / 0.4);
+  border-radius: var(--radius-sm);
+  padding-inline: 1rem;
+  color: var(--color-text-inverse);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hero-skip:hover {
+  background-color: rgb(246 244 239 / 0.1);
+}
+
+@media (min-width: 640px) {
+  .hero-progress {
+    display: block;
+  }
+}
+
+/* Sem JavaScript não há progresso nem frases: o hero é o estado inicial da
+ * casa com o nome e o contacto já à vista. É o que se vê também com
+ * movimento reduzido. */
+.hero-beat {
+  display: none;
+}
+
+.js .hero-beat {
+  display: block;
+}
+
+.js .hero-reveal {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .hero-scroll {
+    min-height: 100svh;
+  }
+
+  .js .hero-reveal {
+    opacity: 1;
+  }
+
+  .hero-beat {
+    display: none !important;
+  }
+}

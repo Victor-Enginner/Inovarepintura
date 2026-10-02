@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { QuoteForm } from './QuoteForm';
@@ -36,16 +37,43 @@ describe('QuoteForm', () => {
     expect(screen.getByLabelText(/Mensagem/)).not.toBeRequired();
   });
 
-  it('traz os atributos que a Netlify exige para detetar o formulário', () => {
-    /* ADR-007: se a secção passar a renderizar por JS, o HTML estático perde
-     * o formulário e a Netlify deixa de o detetar em silêncio. Este teste
-     * trava isso. */
+  it('tem declaração HTML estática necessária ao adaptador Next.js da Netlify', () => {
+    /* O OpenNext adapter não deteta o JSX prerenderizado da app router. Esta
+     * definição em public/ é necessária para evitar erro do plugin e registar
+     * os nomes de campos permitidos antes de aceitar submissões. */
+    const staticHtml = readFileSync('public/orcamento-enviado.html', 'utf8');
+    expect(staticHtml).toMatch(/<form[^>]*?\s(netlify|data-netlify)[=>\s]/);
+    expect(staticHtml).toContain('<form name="orcamento"');
+    expect(staticHtml).toContain('data-netlify="true"');
+    expect(staticHtml).toContain('netlify-honeypot="empresa"');
+    const staticDoc = new DOMParser().parseFromString(staticHtml, 'text/html');
+    const staticForm = staticDoc.querySelector('form[name="orcamento"]');
+    expect(staticForm).not.toBeNull();
+    const staticFields = Array.from(staticForm!.querySelectorAll('[name]'))
+      .map((field) => field.getAttribute('name'))
+      .sort();
+    const { container } = render(<QuoteForm />);
+    const appForm = container.querySelector('form[name="orcamento"]')!;
+    const appFields = Array.from(appForm.querySelectorAll('[name]'))
+      .map((field) => field.getAttribute('name'))
+      .sort();
+    expect(staticFields).toEqual(appFields);
+    expect(
+      (staticForm!.querySelector('input[name="form-name"]') as HTMLInputElement).value,
+    ).toBe('orcamento');
+  });
+
+  it('mantém o JSX sem atributos Netlify incompatíveis com o adapter v5', () => {
+    /* A definição existe no HTML estático acima. Se estes atributos forem
+     * colocados no JSX, o adapter v5 considera a migração incompleta e
+     * termina o build com erro. */
     const { container } = render(<QuoteForm />);
     const form = container.querySelector('form')!;
-    expect(form).toHaveAttribute('data-netlify', 'true');
+    /* O adapter Next.js requer declaração de deteção separada em public/.
+     * Pôr data-netlify no JSX faz o plugin falhar com mensagem de migração. */
+    expect(form).not.toHaveAttribute('data-netlify');
     expect(form).toHaveAttribute('name', 'orcamento');
-    expect(form).toHaveAttribute('action', '/orcamento-enviado');
-    expect(form).toHaveAttribute('netlify-honeypot', 'empresa');
+    expect(form).toHaveAttribute('action', '/orcamento-enviado.html');
     const formName = form.querySelector('input[name="form-name"]');
     expect(formName).toHaveAttribute('value', 'orcamento');
     expect(form.querySelector('input[name="empresa"]')).not.toBeNull();
@@ -62,15 +90,29 @@ describe('QuoteForm', () => {
     expect(options).toContain('Outro / ainda não sei');
   });
 
-  it('mostra confirmação inline quando o envio corre bem', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true }));
+  it('envia URL-encoded para o HTML estático e confirma o sucesso', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
     render(<QuoteForm />);
     fillValidForm();
+    fireEvent.change(screen.getByLabelText(/Mensagem/), {
+      target: { value: 'Pintura da sala' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Pedir orçamento' }));
 
     await waitFor(() => {
       expect(screen.getByRole('status')).toHaveTextContent('Pedido recebido');
     });
+    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/orcamento-enviado.html',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: expect.stringContaining('form-name=orcamento'),
+      }),
+    );
+    expect(fetchMock.mock.calls[0]?.[1]?.body).toContain('mensagem=Pintura+da+sala');
     // A confirmação oferece os canais diretos para casos urgentes.
     expect(screen.getByRole('status').textContent).toContain('WhatsApp');
   });

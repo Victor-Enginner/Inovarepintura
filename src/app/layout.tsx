@@ -24,10 +24,9 @@ const manrope = Manrope({
   variable: '--font-manrope',
 });
 
-/* CLIENT-08: o domínio final ainda não foi confirmado. Fica em variável de
- * ambiente para que canonical e Open Graph fiquem corretos no deploy sem
- * mais alterações de código. O canonical definitivo é bloqueio da Sprint 6. */
-const siteUrl = process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://inovarepintura.pt';
+/* CLIENT-08: domínio confirmado em 2026-10-01. Mantemos override de env
+ * para previews e migrações; o fallback local/prod é o domínio canónico real. */
+const siteUrl = process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://inovarepintura.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -63,6 +62,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { readonly children: React.ReactNode }) {
   return (
     <html lang="pt-PT" className={`${fraunces.variable} ${manrope.variable}`}>
+      {/* Marca que há JavaScript, antes do primeiro pixel.
+       *
+       * O hero scrolltelling só vale a pena com script: sem ele, a secção é
+       * um hero estático de um ecrã. Aplicar a classe aqui, no head, evita o
+       * padrão invertido — pintar 500vh e depois encolher, com salto visível.
+       */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: 'document.documentElement.classList.add("js");',
+        }}
+      />
       <body>
         {/* Primeiro elemento focável da página (§14). */}
         <a className="skip-link" href="#conteudo">

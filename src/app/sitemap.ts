@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const siteUrl = process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://inovarepintura.pt';
+const siteUrl = process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://inovarepintura.com';
 
 /* Duas páginas. Não inventamos rotas por localidade — páginas locais
  * artificiais com texto duplicado prejudicam mais do que ajudam. */

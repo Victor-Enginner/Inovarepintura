@@ -8,8 +8,9 @@ import { email, phone, services, whatsapp } from '@/content/site';
 /* Formulário de pedido de orçamento (ADR-007: Netlify Forms).
  *
  * HTML puro pré-renderizado: sem JavaScript faz POST nativo e a Netlify
- * redireciona para `action` (/orcamento-enviado). Com JavaScript, o envio é
- * por fetch e o resultado aparece inline, sem sair da página.
+ * redireciona para o alvo HTML estático `action` (/orcamento-enviado.html).
+ * Com JavaScript, o envio é por fetch para o mesmo alvo e o resultado aparece
+ * inline, sem sair da página.
  *
  * Campos mínimos de propósito: nome, telefone, tipo de trabalho, mensagem.
  * Nada de morada ou NIF nesta fase. Mensagem opcional — o essencial para
@@ -35,18 +36,27 @@ export function QuoteForm() {
     setStatus('sending');
 
     try {
-      const response = await fetch('/', {
+      /* Netlify Forms + Next.js 16 exige um alvo HTML estático detetável pelo
+       * adapter; ver public/orcamento-enviado.html (OpenNext Forms docs).
+       * URLSearchParams exige valores string, não File/FormDataEntryValue. */
+      const formData = new FormData(form);
+      const encoded = new URLSearchParams();
+      for (const [key, value] of formData.entries()) {
+        encoded.append(key, typeof value === 'string' ? value : value.name);
+      }
+      const response = await fetch('/orcamento-enviado.html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString(),
+        body: encoded.toString(),
       });
       if (!response.ok) throw new Error(`POST / respondeu ${response.status}`);
       form.reset();
       setStatus('sent');
     } catch {
-      /* Sem rede ou fora da Netlify (ex.: localhost): deixa o caminho nativo
-       * tentar — em produção a Netlify apanha o POST e redireciona. Se nem
-       * isso resultar, mostra os canais diretos em vez de um beco sem saída. */
+      /* Se o POST falhar, não repetimos nativamente para evitar duplicados.
+       * Mostramos canais diretos como fallback acessível. Sem JS, o form faz
+       * POST nativo para o HTML estático (action acima), processado pela
+       * Netlify Forms e exibindo a confirmação desta página estática. */
       setStatus('error');
     }
   }
@@ -86,9 +96,7 @@ export function QuoteForm() {
     <form
       name={FORM_NAME}
       method="POST"
-      action="/orcamento-enviado"
-      data-netlify="true"
-      netlify-honeypot={HONEYPOT_NAME}
+      action="/orcamento-enviado.html"
       onSubmit={onSubmit}
       className="rounded-lg border border-border bg-white p-6 sm:p-8"
     >
@@ -176,8 +184,8 @@ export function QuoteForm() {
       </div>
 
       <p className="mt-5 text-sm text-text-muted">
-        Ao enviar, aceita ser contactado sobre este pedido. Nada de spam, nada
-        de partilhas — ver a{' '}
+        Ao enviar, os seus dados serão usados para responder a este pedido e
+        processados pela Netlify para entrega do formulário — ver a{' '}
         <a href="/privacidade" className="underline underline-offset-4 hover:text-action">
           política de privacidade
         </a>

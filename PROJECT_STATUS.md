@@ -230,13 +230,32 @@ crítico. Se forem para o bundle inicial, o orçamento estoura de vez.
 
 O cliente confirmou que quer manter Netlify. O site está pronto para deploy:
 
-- `netlify.toml` configurado (build `npm run build`, publish `.next`,
-  plugin `@netlify/plugin-nextjs` v5 — suporta Next.js 13.5+, incluindo o 16).
-- `netlify-cli` testado via `npx` (27.0.1). **Não** instalado como
-  devDependency de propósito: conflito de peer deps com o `next`
-  (`@opentelemetry/api`) e centenas de MB no lockfile. Usar sempre via `npx`.
+- `netlify.toml` configurado (build `npm run verify`, publish `.next`,
+  plugin `@netlify/plugin-nextjs` 5.15.13 — suporte Next.js 16 confirmado
+  pelo build via Netlify CLI). Plugin mostra atualização disponível a 5.16.1;
+  avaliar atualização controlada, sem atualizar junto com a correção de Forms.
+- `netlify-cli` 27.0.1 instalado na máquina e sessão autorizada para o
+  projeto `inovare-pintura`; não é dependência do app.
 
-Passos que exigem a conta do cliente (não executáveis pelo agente):
+Estado verificado com Netlify CLI autorizado em 2026-10-01:
+
+- Projeto correto: `inovare-pintura`, ID `62c8dc92-7e15-480f-9e1f-22fb5cbe68ef`,
+  domínio `inovarepintura.com`, GitHub `Victor-Enginner/Inovarepintura`, branch `main`.
+- `NEXT_PUBLIC_SITE_URL` produção = `https://inovarepintura.com`.
+- **Form detection ainda desligado** (`ignore_html_forms: true`) e `listSiteForms`
+  devolve lista vazia; tem de ser ativado no UI Netlify antes/depois do próximo
+  deploy. A API oficial consultada não expõe endpoint documentado para ativá-lo.
+- Build de Netlify reproduzido com `netlify build` (plugin
+  `@netlify/plugin-nextjs` 5.15.13): passou com a migração do HTML estático.
+- API Netlify confirmou deploy publicado `5774df4`; `b061d13` falhou duas
+  vezes (`plugin_state: failed_build`). A API devolve só exit code genérico;
+  inspeção do plugin e o build local confirmam a causa/migração.
+
+Passos de produção que exigem uma ação no painel Netlify:
+
+1. Ativar **Forms → Enable form detection** — atualmente desligado.
+2. Depois do push, confirmar que `orcamento` aparece em **Forms**.
+3. Configurar notificação de nova submissão por e-mail e testar um envio real.
 
 ```bash
 npx netlify-cli login          # abre o browser para autorizar
@@ -271,12 +290,11 @@ canonical/Open Graph/sitemap corretos.
 
 ## Próxima ação
 
-- **Deploy em Netlify (decisão do cliente: manter Netlify):** requer conta e
-  autenticação do cliente — ver secção "Deploy" abaixo.
-- **Validação com o cliente (ainda pendente):** consentimento do trabalhador
-  em `real-005` (CLIENT-04), pares antes/depois (CLIENT-05), área de serviço
-  além de Olhão (CLIENT-06), categoria "remodelação" (CLIENT-07), domínio
-  final (CLIENT-08).
+- Formulário: ativar Netlify Forms → Enable form detection no painel, fazer
+  deploy da migração, confirmar formulário/submissão/notificação.
+- **Validação com o cliente (ainda pendente):** domínio final (CLIENT-08)
+  já escolhido e publicado como `inovarepintura.com`; confirmar apenas dados
+  fiscais/conta Google Business quando o cliente os fornecer.
 - **Verificação em dispositivos reais:** Safari iOS e browsers Android.
 - **Google Business Profile:** criar/otimizar perfil com NAP consistente.
 
@@ -299,8 +317,9 @@ canonical/Open Graph/sitemap corretos.
 - Logo animada (pincel a sair da lata): pendente de ficheiro vetorial (SVG)
   do cliente; hoje só existem JPGs de referência em `assets/brand/`.
 - Splash da intro: cliente decidiu manter o atual.
-- Domínio: cliente vai comprar na Hostinger após pagamento; runbook em
-  `docs/DEPLOY.md` + passos DNS (A/CNAME para Netlify, `NEXT_PUBLIC_SITE_URL`).
+- Domínio `inovarepintura.com` na Hostinger/Netlify: ativo, DNS/SSL verificados.
+- Search Console: propriedade de domínio verificada por TXT; sitemap submetido;
+  pedidos de indexação solicitados pelo cliente.
 
 ## Sprint 3 (2026-09-30) — validações, privacidade, qualidade e CI/CD
 
@@ -314,15 +333,33 @@ canonical/Open Graph/sitemap corretos.
   (`docs/DEPLOY.md` com runbook Git + domínio Hostinger passo a passo).
 - Commit: `0de8570`.
 
-## Sprint 4 (2026-10-02) — Contacto visível e formulário de orçamento
+## Sprint 4 (2026-10-01) — Contacto visível e formulário de orçamento
 
 - **Secção de contacto** promovida a partir do FinalCTA: cartões de canal
   com ícones (telefone, WhatsApp, e-mail), botão WhatsApp grande, linha
   "Siga-nos" só com o Instagram real (§9), morada + área de atuação.
 - **Formulário "Pedir orçamento"** via Netlify Forms (ADR-007): Nome,
   Telefone, Tipo (6 serviços + Outro), Mensagem opcional; honeypot;
-  AJAX com confirmação inline; fallback nativo para `/orcamento-enviado`
-  (página nova, noindex, fora do sitemap).
+  AJAX com confirmação inline; fallback nativo para `public/orcamento-enviado.html`.
+  A deteção exige *Forms → Enable form detection* na Netlify e novo deploy;
+  notificação de e-mail é também configuração de painel. Página React de
+  confirmação removida: o próprio HTML estático de confirmação é o `action`.
+- **Incidente de production deploy `b061d13`:** screenshot mostrou
+  `Failed Due To Plugin Error` no build Netlify. Causa confirmada por inspeção
+  do próprio adapter instalado (`@netlify/plugin-nextjs` 5.15.13,
+  `dist/build/verification.js`): ele chama `failBuild` se deteta
+  `data-netlify`/`netlify` no HTML pré-renderizado do Next e não encontra
+  declaração HTML estática em `public/`. `QuoteForm.tsx` continha
+  `data-netlify` e `netlify-honeypot`; não havia ficheiro HTML estático —
+  correspondência exata com a condição de falha do plugin. Migração aplicada:
+  definição e alvo POST em `public/orcamento-enviado.html`; atributos Netlify
+  removidos do JSX; AJAX URL-encoded enviado ao alvo estático.
+- Verificação local pós-correção: lint ✓ · typecheck ✓ · 29/29 unitários ✓ ·
+  build Next ✓ · `netlify build` ✓ (CLI autenticada, plugin 5.15.13) · e2e
+  44 ✓ / 0 ✗ / 10 skip. **Limite operacional:** form detection ainda está
+  desligado. Falta ativá-lo no painel, fazer push/deploy, confirmar formulário
+  em Netlify → Forms, testar submissão real e configurar notificação por e-mail
+  antes de declarar o canal de orçamento operacional.
 - **Rodapé** com 4.ª coluna Navegação (`/#…` funciona de qualquer página);
   âncora `#contactos` movida para a secção de contacto.
 - **`/privacidade`** declara agora os dados do formulário (antes dizia que

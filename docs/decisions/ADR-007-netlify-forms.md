@@ -1,6 +1,6 @@
 # ADR-007 — Formulário de orçamento via Netlify Forms
 
-- Estado: **Aceite** (2026-10-02)
+- Estado: **Aceite** (2026-10-01)
 - Contexto: o cliente pediu um formulário "Solicitar Orçamento" visível,
   inspirado num site de referência. O §16 exige minimizar terceiros e o §14
   exige funcionalidade sem JavaScript.
@@ -12,11 +12,16 @@ Usar **Netlify Forms** (nativo do alojamento) em vez de serviço externo
 
 1. **Sem terceiro novo** — os dados vão do browser para a infraestrutura que
    já aloja o site; nada de scripts de tracking nem chaves de API no cliente.
-2. **Funciona sem JavaScript** — o formulário é HTML puro pré-renderizado com
-   `action="/orcamento-enviado"`; o AJAX é só melhoria progressiva.
+2. **Compatível com Next.js 16 + OpenNext adapter v5** — Netlify não consegue
+   detetar de forma fiável um form React/Next.js pré-renderizado. Um ficheiro
+   estático `public/orcamento-enviado.html` declara o nome e os campos em
+   `data-netlify`, e também é o `action` e destino do POST AJAX. Sem JavaScript,
+   o browser envia o form HTML normal para esse ficheiro estático.
 3. **Anti-spam incluído** — campo honeypot, sem CAPTCHA (fricção zero).
-4. **Custo** — incluído no plano da Netlify até 100 submissões/mês; muito
-   acima do volume esperado de um negócio local.
+4. **Custo** — depende do plano da conta: em planos atuais baseados em
+   créditos, as submissões de Forms são gratuitas e ilimitadas; em planos
+   antigos (legacy), podem ser cobradas por níveis/volume. Confirmar o plano
+   da equipa na Netlify antes de prometer custo zero ao cliente.
 
 ## Consequências
 
@@ -24,10 +29,19 @@ Usar **Netlify Forms** (nativo do alojamento) em vez de serviço externo
   "Outro"), Mensagem opcional. Nada de morada/NIF nesta fase.
 - Notificações por e-mail configuram-se no painel da Netlify
   (Forms → Notifications) — passo manual documentado no `DEPLOY.md`.
-- Deteção do formulário acontece no build: o markup tem de existir no HTML
-  estático. Como a página é pré-renderizada, está garantido; se a secção de
-  contacto passar a carregar por JavaScript, isto parte silenciosamente —
-  o teste `quote-form.test.tsx` trava `data-netlify` e `form-name`.
+- Retenção, localização e acesso às submissões dependem das condições do
+  plano/Netlify e das práticas do responsável; a política não inventa prazo
+  fixo. O responsável deve rever as condições de tratamento aplicáveis.
+- Deteção do formulário acontece no build: `public/orcamento-enviado.html`
+  inclui `<form name="orcamento" data-netlify="true">`, o honeypot e todos os
+  campos. JSX em `QuoteForm.tsx` deliberadamente NÃO inclui `data-netlify` nem
+  `netlify-honeypot`: o OpenNext adapter v5 aborta o build se deteta esses
+  atributos em JSX sem uma definição estática. O teste lê e verifica o HTML
+  estático, os campos e a action.
+- Em Next.js moderno, o destino do envio também tem de ser um ficheiro
+  estático — não uma rota de página armazenada na cache do Next. AJAX e POST
+  nativo usam `/orcamento-enviado.html`; a resposta inline é uma melhoria
+  progressiva. `URLSearchParams` codifica pares form-urlencoded, nunca JSON.
 - A página `/privacidade` passa a declarar estes dados (antes dizia que não
   havia formulários).
 - Quando o analytics tiver ferramenta (§16), adicionar o evento

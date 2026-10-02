@@ -1,6 +1,8 @@
 # Deploy Netlify. O plugin oficial trata do App Router, ISR e imagens.
 [build]
-  command = "npm run build"
+  # Falha o deploy antes da etapa do adapter se lint, types, testes ou build
+  # tiverem erros; o script verify já inclui exatamente um build Next.
+  command = "npm run verify"
   publish = ".next"
 
 [[plugins]]

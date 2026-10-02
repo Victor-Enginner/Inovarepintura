@@ -7,23 +7,37 @@
 remodelação e isolamento térmico em Olhão. Veja trabalhos reais e peça o seu
 orçamento.
 
-## Cutscene
-
-Usar uma frase curta por cena, com aparição discreta:
-
-1. **Antes da cor, há uma história.**
-2. **Preparar é onde começa o acabamento.**
-3. **Cada detalhe conta.**
-4. **A transformação torna-se visível.**
-5. **Inovare Pintura.**
-
-No reduced motion, omitir todas e mostrar diretamente o hero.
-
 ## Hero
+
+O hero é o scrolltelling dos cinco frames. O h1 está no reveal final, no fim
+do percurso.
+
+**Marca:** Inovare Pintura
+
+**Headline:** Transformamos espaços. Valorizamos o que é seu.
+
+**CTA principal:** Pedir orçamento (telefone)
+
+**Telefone:** +351 913 411 051
+
+No reduced motion, o hero mostra diretamente a casa final com marca, headline
+e telefone — sem percurso.
+
+## Frases do percurso
+
+Uma frase curta por cena, com aparição discreta, sobre os frames 2 a 4:
+
+1. **Preparar é onde começa o acabamento.**
+2. **Cada detalhe conta.**
+3. **A transformação torna-se visível.**
+
+O frame 1 não leva texto por cima: a marca já está gravada na imagem.
+
+## Secção seguinte
 
 **Eyebrow:** Pintura, reparação e remodelação em Olhão
 
-**Headline:** Transformamos espaços. Protegemos o que é seu.
+**Headline (h2):** Transformamos espaços. Protegemos o que é seu.
 
 **Texto:** Pintura interior e exterior, reparações, pladur, canalização,
 remodelação e isolamento térmico — com preparação rigorosa, acabamento cuidado
@@ -136,7 +150,7 @@ combine a melhor forma de o avaliarmos.
 **Campos:** Nome · Telefone · Tipo de trabalho (os 6 serviços + "Outro / ainda não sei") · Mensagem (opcional)  
 **Placeholders:** "O seu nome" · "+351 …" · "Escolha o mais próximo" · "Conte-nos em poucas palavras o que precisa"  
 **Botão:** Pedir orçamento ("A enviar…" durante o envio)  
-**Aviso de privacidade:** "Ao enviar, aceita ser contactado sobre este pedido. Nada de spam, nada de partilhas."  
+**Aviso de privacidade:** "Ao enviar, os seus dados serão usados para responder a este pedido e processados pela Netlify para entrega do formulário."
 **Sucesso:** "Pedido recebido." + "Obrigado pelo contacto. Vamos ligar-lhe de volta assim que possível."  
 **Erro:** "Não conseguimos enviar agora. Tente de novo ou fale connosco diretamente."  
 **Página sem JS:** "Pedido recebido." + "Obrigado pelo contacto." + botões de telefone/WhatsApp

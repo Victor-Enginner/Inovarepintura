@@ -35,7 +35,10 @@ test.describe('Contacto', () => {
     await page.locator('section#contactos').scrollIntoViewIfNeeded();
 
     const form = page.locator('section#contactos form[name="orcamento"]');
-    await expect(form).toHaveAttribute('data-netlify', 'true');
+    /* Os atributos Netlify vivem no ficheiro HTML estático de deteção;
+     * o JSX não os deve ter, senão o adapter v5 aborta o build. */
+    await expect(form).not.toHaveAttribute('data-netlify');
+    await expect(form).toHaveAttribute('action', '/orcamento-enviado.html');
     await expect(form.getByLabel(/Nome/)).toBeVisible();
     await expect(form.getByLabel(/Telefone/)).toBeVisible();
     await expect(form.getByLabel(/Tipo de trabalho/)).toBeVisible();
@@ -43,8 +46,9 @@ test.describe('Contacto', () => {
   });
 
   test('submissão mostra confirmação inline', async ({ page }) => {
-    /* Simula a Netlify: POST / com 200. */
-    await page.route('/', async (route) => {
+    /* Simula resposta HTTP do endpoint estático. Isto testa a UI/AJAX,
+     * não substitui a verificação real de Netlify Forms em produção. */
+    await page.route('**/orcamento-enviado.html', async (route) => {
       if (route.request().method() === 'POST') {
         await route.fulfill({ status: 200, body: 'ok' });
       } else {
@@ -65,13 +69,63 @@ test.describe('Contacto', () => {
     );
   });
 
-  test('página de confirmação existe (fallback sem JS)', async ({ page }) => {
-    await page.goto('/orcamento-enviado');
+  test('alvo estático inclui a declaração e os campos detetáveis pela Netlify', async ({ page }) => {
+    const response = await page.request.get('/orcamento-enviado.html');
+    expect(response.status()).toBe(200);
+    const html = await response.text();
+    expect(html).toContain('<form name="orcamento"');
+    expect(html).toContain('data-netlify="true"');
+    expect(html).toContain('netlify-honeypot="empresa"');
+    for (const field of ['form-name', 'nome', 'telefone', 'tipo', 'mensagem', 'empresa']) {
+      expect(html).toContain(`name="${field}"`);
+    }
+
+    /* O alvo do POST mostra confirmação útil se JS estiver desativado. */
+    await page.goto('/orcamento-enviado.html');
     await expect(page.getByRole('heading', { name: 'Pedido recebido.' })).toBeVisible();
     await expect(page.getByRole('link', { name: /Voltar à página inicial/ })).toHaveAttribute(
       'href',
       '/',
     );
+  });
+
+  test('fallback nativo submete os campos quando JavaScript está desativado', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const noJsPage = await context.newPage();
+    let postBody = '';
+
+    /* Simula apenas o endpoint de receção para testar HTML/form encoding.
+     * A submissão real de Netlify Forms continua a exigir validação em prod. */
+    await noJsPage.route('**/orcamento-enviado.html', async (route) => {
+      if (route.request().method() === 'POST') {
+        postBody = route.request().postData() ?? '';
+        await route.fulfill({
+          status: 200,
+          contentType: 'text/html; charset=utf-8',
+          body: '<!doctype html><html lang="pt-PT"><h1>Pedido recebido.</h1></html>',
+        });
+      } else {
+        await route.continue();
+      }
+    });
+
+    await noJsPage.goto('/');
+    const form = noJsPage.locator('section#contactos form[name="orcamento"]');
+    await form.getByLabel(/^Nome$/).fill('Teste sem JavaScript');
+    await form.getByLabel(/^Telefone$/).fill('+351 900 000 000');
+    await form.getByLabel(/^Tipo de trabalho$/).selectOption({ index: 1 });
+    await form.getByLabel(/Mensagem/).fill('Pedido de teste sem JS');
+    await form.getByRole('button', { name: 'Pedir orçamento' }).click();
+
+    await expect(noJsPage.getByRole('heading', { name: 'Pedido recebido.' })).toBeVisible();
+    const submitted = new URLSearchParams(postBody);
+    expect(submitted.get('form-name')).toBe('orcamento');
+    expect(submitted.get('nome')).toBe('Teste sem JavaScript');
+    expect(submitted.get('telefone')).toBe('+351 900 000 000');
+    expect(submitted.get('tipo')).not.toBeNull();
+    expect(submitted.get('mensagem')).toBe('Pedido de teste sem JS');
+
+    await context.close();
   });
 
   test('rodapé tem navegação e privacidade', async ({ page }) => {
