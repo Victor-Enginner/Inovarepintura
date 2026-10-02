@@ -526,3 +526,21 @@ e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.
   frases continuam invisíveis. É a única forma de medir o intervalo entre o
   primeiro pixel e a hidratação — sem o bloqueio, o Playwright mediria sempre
   o estado final e o teste passaria sempre.
+
+
+## Hero vídeo em loop — 02/10/2026 — DONE (validação local)
+- Estado: main clonado, sem alterações prévias; GitHub autenticado.
+- Stack: Next.js 16, React 19, TypeScript, GSAP, npm/lockfile.
+- Assets: vídeo fornecido pelo cliente (~9,7 MB), posters existentes.
+- Lacunas: hero usa cinco imagens com scrub em vez do vídeo solicitado.
+- Riscos: autoplay móvel, recorte vertical, texto invisível a capturar foco, movimento reduzido.
+- Plano: vídeo H.264 responsivo em loop; apenas texto reage ao scroll; poster, pausa e saltar.
+- Verificação: npm run verify e Playwright em desktop/mobile, sem JS e reduced motion.
+
+- Entregue: vídeo independente do scroll, 1080p desktop (4,4 MB) e recorte central 9:16 para mobile (1,6 MB); sem áudio, H.264/faststart.
+- Texto: promessa e contactos na abertura e no final; três frases no percurso. Sem halo/mancha nem véu sobre o vídeo, por pedido explícito do cliente. Sombra apenas nas letras.
+- Fallback: poster e contactos sem JS, com reduced motion e autoplay bloqueado; pausa manual e quando a aba fica oculta.
+- Evidências: npm run verify passou (lint, tipos, 29 unitários e build); suite e2e com 53 aprovações e uma falha no cálculo do teste móvel (não incluía o deslocamento do cabeçalho). Corrigido o helper; sete testes do hero móvel passaram na repetição. Total de 54 cenários aplicáveis validados, 10 skips de plataforma.
+- Inspeção visual: screenshots 1440×900 e 390×844, vídeo a reproduzir e uma frase visível de cada vez. Emulação Chromium; iPhone físico não disponível.
+- Limitação visual: contraste sobre vídeo varia com o frame; remover a mancha foi preferência explícita. Sem alegação de medição AA de todos os frames.
+- Publicação: auto publishing de main confirmado na conta Netlify através do Chrome do utilizador; aguardando push/deploy.

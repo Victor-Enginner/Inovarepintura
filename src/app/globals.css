@@ -107,27 +107,20 @@
   transform: translateY(0);
 }
 
-/* ── Hero scrolltelling ──────────────────────────────────────────────────
- * Fora de @layer de propósito: estas regras têm de vencer o Tailwind
- * (mesma especificidade, e o comportamento sem JavaScript depende delas).
- *
- * A altura do percurso (500vh) só existe quando há JavaScript. A classe
- * `js` é posta no <html> por um script inline no <head>, antes do primeiro
- * pixel, por isso não há salto. Sem ela — e com movimento reduzido — a secção
- * é um hero estático de um ecrã: conteúdo completo, zero código.
- */
+/* Hero: vídeo independente do scroll, texto em HTML.
+ * A altura extra só existe após inicialização; fallback usa um ecrã. */
 
 .hero-scroll {
   min-height: 100svh;
 }
 
-.js .hero-scroll {
-  min-height: 500svh;
+.hero-animated {
+  min-height: 400svh;
 }
 
 @media (max-width: 1023px) {
-  .js .hero-scroll {
-    min-height: 360svh;
+  .hero-animated {
+    min-height: 300svh;
   }
 }
 
@@ -137,73 +130,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Enquadramento vertical.
-   *
-   * `object-position` só tem efeito visível em ecrãs mais largos que 16:9.
-   * Nos viewports de validação (1920×1080, 2560×1440, 3840×2160, 1440×900,
-   * 390×844) o recorte vertical é de 0 a 1 px, porque a imagem já é 16:9.
-   * Numa janela larga e baixa é que há excesso: medido, 131 px a 1920×950 e
-   * 361 px a 2560×1080.
-   *
-   * E o sentido é contra-intuitivo: **percentagem maior empurra a imagem para
-   * CIMA e corta mais topo.** Com 60% a janela começava em y=141 e a marca
-   * gravada no frame 1 começa em y=113 — ou seja, o logo era cortado, que é
-   * precisamente a queixa. A 45% a janela começa em y=106 e o logo fica
-   * inteiro, com o push-in incluído.
-   *
-   * Medido nos 5 masters, o desvio entre frames é de 10 px em 1672 — por isso
-   * o valor é único para todos. Dar um offset diferente a cada frame criaria
-   * um salto de 0,6% entre camadas, que é o que faz uma transformação
-   * parecer um slideshow. */
-  object-position: 50% 45%;
-  /* O push-in cresce a partir da base, para não comer as pinceladas. Foi
-   * reduzido de 1,025 para 1,012 porque ancorado à base ele cortava 2,5% do
-   * topo — e é no topo que está a marca gravada. A 1,012 corta 1,2%: ainda se
-   * vê que a imagem anda, sem levar o logo. */
-  transform-origin: 50% 100%;
-  transform: translate3d(0, 0, 0);
+  object-position: center;
 }
 
-/* Em ecrã estreito o `cover` funciona ao contrário: a altura enche e é a
- * largura que é cortada, ficando só 26% da imagem visível. O corte lateral
- * é que levava a base da casa e a marca gravada no primeiro frame fora de
- * quadro. O deslocamento é por forma de tela: quanto mais alta a janela em
- * relação à largura, mais para a esquerda é preciso olhar.
- *
- * Medido no master (1672px): a fachada ocupa 0–35% da largura e a marca
- * gravada 24–50%. A 32% a janela cobre 22–48% e traz as duas inteiras. */
-@media (max-aspect-ratio: 3 / 2) {
-  .hero-frame {
-    object-position: 40% 45%;
-  }
-}
-
-@media (max-aspect-ratio: 1 / 1) {
-  .hero-frame {
-    object-position: 32% 45%;
-  }
-}
-
-/* As camadas 2–5 só existem com JavaScript e só entram por opacidade. */
-.hero-frame[data-hero-layer] {
-  opacity: 0;
-}
-
-/* O texto do hero vive ao centro, sobre a fotografia, protegido pelo halo
- * radial de `.hero-halo`. O véu em gradiente que existia aqui já não: era uma
- * faixa escura na base do ecrã, feita para o texto que esteve ancorado ao
- * canto inferior esquerdo. Com o texto centrado, escurecer a base só tirava
- * luz à casa sem proteger nada. */
-
-/* Palco de texto: frases do percurso e reveal final, ambos ao centro.
- *
- * O alinhamento é do contentor (`inset: 0` + flex centrado), não um `bottom`
- * ou um `translate` em píxeis: é assim que o texto continua centrado quando
- * a altura da janela muda — barras do browser que entram e saem, ecrã
- * dobrado, rotação.
- *
- * `pointer-events: none` não pode ser posto aqui: o CTA do reveal final tem
- * de ser clicável. Quem o não tem é o halo. */
 .hero-stage {
   position: absolute;
   inset: 0;
@@ -219,39 +148,6 @@
 
 .hero-stage a {
   pointer-events: auto;
-}
-
-/* Halo atrás do texto. Radial e a desaparecer: escurece o que está por trás
- * das letras sem pôr uma caixa à volta do texto nem tapar a casa.
- *
- * A intensidade é diferente por largura, e não por acaso: em ecrã estreito
- * o `object-position` a 32% mostra a faixa mais clara da fotografia (a
- * fachada, luminância 196–206), onde o branco dá 2,0:1. Em desktop a
- * fotografia atrás do texto é bem mais escura. Com o mesmo valor nos dois,
- * ou o desktop escurecia a casa a mais, ou o telemóvel ficava abaixo de AA.
- * Medido em ecrã real, não estimado. */
-.hero-halo {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(
-    ellipse 80% 44% at 50% 50%,
-    rgb(3 28 58 / 0.62) 0%,
-    rgb(3 28 58 / 0.58) 62%,
-    rgb(3 28 58 / 0) 95%
-  );
-  opacity: 0;
-}
-
-@media (max-width: 767px) {
-  .hero-halo {
-    background-image: radial-gradient(
-      ellipse 80% 44% at 50% 50%,
-      rgb(3 28 58 / 0.85) 0%,
-      rgb(3 28 58 / 0.8) 62%,
-      rgb(3 28 58 / 0) 95%
-    );
-  }
 }
 
 .hero-beat {
@@ -405,43 +301,64 @@
  * Sem isto, sem JavaScript o hero ficava sem nome e sem telefone — que era
  * precisamente o canal de conversão. */
 .hero-beat {
+  opacity: 0;
   display: none;
 }
 
-/* Com JavaScript as frases existem, mas escondidas.
- *
- * Sem este `opacity: 0` elas ficam visíveis desde o primeiro pixel até o
- * GSAP arrancar na hidratação — e como as três são `position: absolute`
- * centradas, apareciam as três ao mesmo tempo, sobrepostas, e depois
- * desapareciam de repente. Era um flash de texto com todas as frases
- * empilhadas no centro do ecrã a cada F5.
- *
- * O `display: block` continua a ser o que distingue o caminho com script do
- * caminho sem script, onde não há percurso e as frases não existem. */
-.js .hero-beat {
+/* Frases escondidas até o controlador de scroll estar pronto. */
+.hero-animated .hero-beat {
   display: block;
   opacity: 0;
 }
 
-/* Com JavaScript, o reveal só aparece quando a timeline o revela. */
-.js .hero-reveal {
+/* O controlador mostra a promessa na abertura e no final. */
+.hero-animated .hero-reveal {
   opacity: 0;
+  visibility: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .js .hero-scroll {
+  .hero-animated {
     min-height: 100svh;
   }
 
-  .js .hero-reveal {
-    opacity: 1;
-  }
-
-  .hero-halo {
+  .hero-animated .hero-reveal {
     opacity: 1;
   }
 
   .hero-beat {
     display: none;
   }
+}
+
+.hero-controls {
+  z-index: 30;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: calc(100% - 2 * var(--spacing-gutter));
+}
+.hero-skip {
+  background: rgb(3 20 39 / 0.65);
+}
+.hero-pause {
+  cursor: pointer;
+}
+html:not(.js) .hero-pause {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-video,
+  .hero-pause {
+    display: none;
+  }
+  .hero-reveal {
+    visibility: visible;
+  }
+}
+
+.hero-brand,
+.hero-phone {
+  text-shadow:
+    0 1px 3px rgb(0 0 0 / 0.85),
+    0 2px 8px rgb(0 0 0 / 0.65);
 }

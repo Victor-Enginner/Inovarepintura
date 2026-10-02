@@ -1,21 +1,20 @@
 import { test, expect, type Page } from '@playwright/test';
 
-/* O hero deixou de ser a cutscene com vídeo e passou a ser um scrolltelling
- * de cinco frames (ADR-008). O que se verifica aqui é o que o briefing pediu:
- * que não há slideshow, que a sequência avança na ordem certa e que existe
- * uma saída para quem não quer a introdução. */
+/* Vídeo em loop independente do scroll; apenas o texto segue a narrativa. */
 
 const SECTION = 'section[aria-label*="transformação"]';
 
 /** Posição de scroll correspondente a uma fração do percurso do hero. */
 async function scrollToProgress(page: Page, p: number) {
+  await expect(page.locator(SECTION)).toHaveClass(/hero-animated/);
   await page.evaluate((target) => {
     const section = document.querySelector('section[aria-label*="transformação"]');
     if (!section) return;
     const scrollable = section.clientHeight - window.innerHeight;
-    window.scrollTo({ top: scrollable * target, behavior: 'instant' });
+    const top = section.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: top + scrollable * target, behavior: 'instant' });
   }, p);
-  /* scrub: 1 é uma suavização de cerca de 1 s. */
+  /* Dar ao browser tempo para renderizar a nova posição. */
   await page.waitForTimeout(1500);
 }
 
@@ -43,44 +42,49 @@ test.describe('Hero scrolltelling', () => {
       ),
     );
     expect(opacities).toEqual(['0', '0', '0']);
-
-    /* O halo também não pode estar aceso sem texto por trás. */
-    expect(
-      await page.evaluate(() => getComputedStyle(document.querySelector('[data-hero-halo]')!).opacity),
-    ).toBe('0');
   });
 
-  test('avança pelos cinco frames pela ordem certa, sem saltos', async ({ page }) => {
+  test('vídeo continua em loop enquanto apenas as frases seguem o scroll', async ({
+    page,
+  }) => {
     await page.goto('/');
-    await scrollToProgress(page, 0);
-
-    /* No início só a base está visível: nenhum pedido antecipado. */
-    const opacities = () =>
-      page.evaluate(() => {
-        const section = document.querySelector('section[aria-label*="transformação"]');
-        return Array.from(section?.querySelectorAll('img[data-hero-layer]') ?? []).map(
-          (i) => Number(getComputedStyle(i).opacity),
+    const video = page.locator('[data-hero-video]');
+    await expect(video).toHaveAttribute('loop', '');
+    await expect(video).toHaveAttribute('playsinline', '');
+    await page.waitForFunction(() => {
+      const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+      return video && video.currentTime > 0 && !video.paused;
+    });
+    const source = await video.getAttribute('src');
+    for (const progress of [0.28, 0.48, 0.68]) {
+      await scrollToProgress(page, progress);
+      const visible = await page
+        .locator('[data-hero-beat]')
+        .evaluateAll(
+          (nodes) =>
+            nodes.filter((node) => Number(getComputedStyle(node).opacity) > 0.9).length,
         );
-      });
-
-    expect(await opacities()).toEqual([0, 0, 0, 0]);
-
-    const expected = [0.34, 0.54, 0.74, 1];
-
-    for (const [step, p] of expected.entries()) {
-      await scrollToProgress(page, p);
-      const ops = await opacities();
-
-      /* Os frames já revelados ficam opacos; os seguintes continuam limpos.
-       * É isto que distingue uma transformação contínua de um slideshow. */
-      for (let i = 0; i < ops.length; i += 1) {
-        if (i <= step) expect(ops[i]).toBe(1);
-        else expect(ops[i]).toBe(0);
-      }
+      expect(visible).toBe(1);
+      await expect(video).toHaveAttribute('src', source!);
+      expect(await video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(false);
     }
+    await page.getByRole('button', { name: 'Pausar vídeo' }).click();
+    expect(await video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
+    await page.getByRole('button', { name: 'Reproduzir vídeo' }).click();
+    await page.waitForFunction(
+      () => !document.querySelector<HTMLVideoElement>('[data-hero-video]')?.paused,
+    );
+    // Wait through a complete cycle to prove playback restarts.
+    await video.evaluate((el: HTMLVideoElement) => {
+      el.currentTime = el.duration - 0.3;
+    });
+    await page.waitForFunction(() => {
+      const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+      return video && !video.seeking && !video.paused && video.currentTime < 2;
+    });
   });
 
-  test('o último frame segura e o reveal final aparece com o nome e o contacto', async ({
+  test('o final da narrativa mostra o nome e o contacto', async ({
     page,
   }) => {
     await page.goto('/');
@@ -89,7 +93,9 @@ test.describe('Hero scrolltelling', () => {
 
     const reveal = page.locator('[data-hero-reveal]');
     await expect(reveal).toHaveCSS('opacity', '1');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Transformamos espaços');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Transformamos espaços',
+    );
 
     /* O telefone é a via de conversão principal e tem de ser clicável. */
     const phone = page.locator('[data-hero-reveal] .hero-phone');
@@ -115,7 +121,7 @@ test.describe('Hero scrolltelling', () => {
     expect(await page.evaluate(() => document.activeElement?.id)).toBe('hero');
   });
 
-  test('sem JavaScript fica a casa final com nome e contacto, nunca um vazio', async ({
+  test('sem JavaScript fica o poster com nome e contacto', async ({
     browser,
   }) => {
     const context = await browser.newContext({ javaScriptEnabled: false });
@@ -138,7 +144,9 @@ test.describe('Hero scrolltelling', () => {
     await context.close();
   });
 
-  test('com movimento reduzido mostra a casa final e não corre a timeline', async ({ browser }) => {
+  test('com movimento reduzido mostra o poster sem reproduzir vídeo', async ({
+    browser,
+  }) => {
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await context.newPage();
     await page.goto('/');
@@ -146,7 +154,10 @@ test.describe('Hero scrolltelling', () => {
     /* O <source media> faz o browser pedir o frame 5 em vez do 1. */
     const base = page.locator('[data-hero-base]');
     await expect(base).toBeVisible();
-    expect(await base.evaluate((img: HTMLImageElement) => img.currentSrc)).toContain('frame-05');
+    expect(await base.evaluate((img: HTMLImageElement) => img.currentSrc)).toContain(
+      'renovation-poster',
+    );
+    await expect(page.locator('[data-hero-video]')).not.toHaveAttribute('src');
 
     /* Um ecrã só, com o contacto à vista. */
     const height = await page.locator(SECTION).evaluate((el) => el.clientHeight);

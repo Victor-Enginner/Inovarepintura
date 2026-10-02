@@ -1,16 +1,9 @@
 import { test } from '@playwright/test';
 import { injectAxe, configureAxe, checkA11y } from 'axe-playwright';
 
-/* O texto do hero vive sobre fotografia. O axe não compõe um halo radial com
- * a imagem que está por baixo, por isso mede o branco contra a cor da página e
- * acusa um contraste que não existe — logo depois de se medir mais de 5:1 no
- * ecrã real.
- *
- * A regra fica desligada só para esse contentor, e o mesmo contraste é
- * verificado a partir dos píxeis realmente renderizados em `hero.spec.ts`.
- * Isso é uma verificação mais forte, não mais fraca: mede o que está mesmo
- * atrás das letras, no viewport real, em vez de o inferir da folha de
- * estilos. O resto da página continua sob a regra completa. */
+/* O texto sobre vídeo tem sombra discreta; sem o halo a pedido do cliente.
+ * O axe não consegue compor o vídeo com as letras. A verificação automática
+ * do resto da página mantém-se; o hero exige inspeção visual em ambos os tamanhos. */
 const HERO_COPY_CONTRAST = [
   { id: 'color-contrast', selector: '.hero-stage', enabled: false },
 ];

@@ -17,7 +17,11 @@ test.describe('Verificação visual em telemóvel', () => {
     const base = page.locator('[data-hero-base]');
     await expect(base).toBeVisible();
     const src = await base.evaluate((img: HTMLImageElement) => img.currentSrc);
-    expect(src).toContain('/hero/inovare/frame-01');
+    expect(src).toContain('/hero/inovare/renovation-poster');
+    await expect(page.locator('[data-hero-video]')).toHaveAttribute(
+      'src',
+      '/hero/inovare/renovation-mobile.mp4',
+    );
     expect(src).not.toMatch(/frame-01\.webp$/);
   });
 
@@ -54,12 +58,16 @@ test.describe('Verificação visual em telemóvel', () => {
     await expect(footer).toBeInViewport();
   });
 
-  test('galeria mostra grelha (não carrossel magnético) em ecrã estreito', async ({ page }) => {
+  test('galeria mostra grelha (não carrossel magnético) em ecrã estreito', async ({
+    page,
+  }) => {
     await page.goto('/');
 
     const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
-    await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
+    await page
+      .getByRole('heading', { name: 'Trabalho real. Resultado visível.' })
+      .scrollIntoViewIfNeeded();
 
     /* A grelha deve usar grid, não flex. */
     const list = page.locator('#trabalhos ul');
@@ -72,7 +80,9 @@ test.describe('Verificação visual em telemóvel', () => {
 
     const skipButton = page.getByRole('link', { name: 'Saltar introdução' });
     await skipButton.click();
-    await page.getByRole('heading', { name: 'Trabalho real. Resultado visível.' }).scrollIntoViewIfNeeded();
+    await page
+      .getByRole('heading', { name: 'Trabalho real. Resultado visível.' })
+      .scrollIntoViewIfNeeded();
 
     /* Abrir dialog com tap. */
     const firstPhoto = page.locator('#trabalhos ul li button').first();
