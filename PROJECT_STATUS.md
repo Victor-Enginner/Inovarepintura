@@ -563,3 +563,7 @@ e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.
 - Fundo único frame-05.webp (ilustrativo, já existente), cover com ponto focal móvel; sem vídeo ou controlos de reprodução, sem downloads MP4. Mantida narrativa apenas em texto e fallback de movimento reduzido.
 - A imagem preenche a área útil do navegador; monitor 1920×1080 não implica viewport 16:9 devido às barras do Chrome e Windows.
 - Validação: lint, tipos, 29 unitários e build passaram; 22 testes e2e aprovados, 6 skips de plataforma. Inspeção visual 1905×912 e 390×844 sem bordas.
+
+### Cabeçalho de vidro fixo — 02/10/2026
+- Pedido restrito à barra superior: painel translúcido com blur, bordas iluminadas, cantos suaves e CTA em vidro. position: fixed acompanha toda a rolagem na home; destinos das âncoras compensam altura da barra.
+- Verificação: build com tipos passou; 14 testes de teclado/axe/visual móvel aprovados, 6 skips. Inspeção desktop/mobile na abertura e após clicar Serviços; cabeçalho permanece no topo e conteúdo legível.
