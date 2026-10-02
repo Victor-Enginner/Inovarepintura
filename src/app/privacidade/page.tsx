@@ -20,7 +20,7 @@ import { contactChannels, postalAddress, site } from '@/content/site';
 export const metadata: Metadata = {
   title: 'Política de Privacidade | Inovare Pintura',
   description:
-    'Como a Inovare Pintura trata os dados de quem visita o site: sem cookies, sem formulários e sem partilha de dados com terceiros.',
+    'Como a Inovare Pintura trata os dados de quem visita o site: sem cookies, apenas os dados do pedido de orçamento, e sem partilha com terceiros.',
   alternates: { canonical: '/privacidade' },
 };
 
@@ -51,9 +51,19 @@ export default function PrivacyPage() {
               Que dados recolhemos
             </Heading>
             <Prose className="mt-4">
-              Este site não recolhe dados pessoais. Não existem formulários, não são
+              Navegar pelas páginas não deixa registos associados a si: não são
               instalados cookies e não são utilizadas ferramentas de medição de
-              audiência. Navegar pelas páginas não deixa registos associados a si.
+              audiência.
+            </Prose>
+            <Prose className="mt-4">
+              O único dado pessoal que nos chega através do site é o que escreve
+              no formulário de pedido de orçamento: nome, telefone, tipo de
+              trabalho e mensagem. Usamos esses dados apenas para responder ao
+              seu pedido — por telefone ou pelo canal que indicar. O envio fica
+              guardado no sistema de formulários do alojamento e na caixa de
+              correio que recebe a notificação; apagamos quando o pedido estiver
+              concluído ou quando pedir. Pode pedir acesso, retificação ou
+              eliminação desses dados a qualquer momento pelos contactos acima.
             </Prose>
             <Prose className="mt-4">
               Como qualquer website, o alojamento pode registar dados técnicos

@@ -131,6 +131,16 @@ combine a melhor forma de o avaliarmos.
 **CTA e-mail:** Enviar e-mail  
 **CTA Instagram:** Ver no Instagram
 
+## Formulário de orçamento (Sprint 4)
+
+**Campos:** Nome · Telefone · Tipo de trabalho (os 6 serviços + "Outro / ainda não sei") · Mensagem (opcional)  
+**Placeholders:** "O seu nome" · "+351 …" · "Escolha o mais próximo" · "Conte-nos em poucas palavras o que precisa"  
+**Botão:** Pedir orçamento ("A enviar…" durante o envio)  
+**Aviso de privacidade:** "Ao enviar, aceita ser contactado sobre este pedido. Nada de spam, nada de partilhas."  
+**Sucesso:** "Pedido recebido." + "Obrigado pelo contacto. Vamos ligar-lhe de volta assim que possível."  
+**Erro:** "Não conseguimos enviar agora. Tente de novo ou fale connosco diretamente."  
+**Página sem JS:** "Pedido recebido." + "Obrigado pelo contacto." + botões de telefone/WhatsApp
+
 ## WhatsApp prefill
 
 ```txt

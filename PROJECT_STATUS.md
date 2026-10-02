@@ -313,3 +313,23 @@ canonical/Open Graph/sitemap corretos.
 - **Deploy contínuo documentado:** push → CI → Netlify publica
   (`docs/DEPLOY.md` com runbook Git + domínio Hostinger passo a passo).
 - Commit: `0de8570`.
+
+## Sprint 4 (2026-10-02) — Contacto visível e formulário de orçamento
+
+- **Secção de contacto** promovida a partir do FinalCTA: cartões de canal
+  com ícones (telefone, WhatsApp, e-mail), botão WhatsApp grande, linha
+  "Siga-nos" só com o Instagram real (§9), morada + área de atuação.
+- **Formulário "Pedir orçamento"** via Netlify Forms (ADR-007): Nome,
+  Telefone, Tipo (6 serviços + Outro), Mensagem opcional; honeypot;
+  AJAX com confirmação inline; fallback nativo para `/orcamento-enviado`
+  (página nova, noindex, fora do sitemap).
+- **Rodapé** com 4.ª coluna Navegação (`/#…` funciona de qualquer página);
+  âncora `#contactos` movida para a secção de contacto.
+- **`/privacidade`** declara agora os dados do formulário (antes dizia que
+  não existiam formulários).
+- Copy registada em docs/04 + `content.pt-PT.json`; notificações por e-mail
+  documentadas no DEPLOY §4.5 (passo manual no painel da Netlify).
+- Verificações: lint ✓ · typecheck ✓ · 28/28 unitários ✓ · build ✓
+  (8 rotas) · e2e 42 ✓ / 0 ✗ (nova spec `contact.spec.ts`, 5 testes).
+- Recusado (registado): estatísticas inventadas, canais sociais
+  inexistentes, paleta do site de referência.

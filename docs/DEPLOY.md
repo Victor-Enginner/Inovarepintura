@@ -122,7 +122,20 @@ E confirmar no HTML da home: canonical e `og:url` apontam para
    Netlify trata do redirect se `inovare-pintura.netlify.app` continuar
    ligado ao site (auto).
 
-### 4.5 E-mail profissional (opcional, recomendado)
+### 4.5 Notificações do formulário (obrigatório com o formulário ativo)
+
+As submissões de "Pedir orçamento" ficam em **Netlify → Forms**
+(listagem e detalhe). Para chegarem ao e-mail do cliente:
+
+1. **Netlify** → *Forms* → *Form notifications* → **Add notification** →
+   *Email notification*;
+2. Evento: *New form submission* · formulário: `orcamento` ·
+   destino: o e-mail do cliente;
+3. Testar com uma submissão real e confirmar que chegou (ver spam).
+
+Sem isto, os pedidos acumulam-se no painel sem ninguém saber.
+
+### 4.6 E-mail profissional (opcional, recomendado)
 
 Com o domínio na Hostinger, ativar `geral@inovarepintura.pt` (planos de
 e-mail da própria Hostinger, ou encaminhar para o Gmail atual). Se ativar,

@@ -44,7 +44,7 @@ test.describe('Verificação visual em telemóvel', () => {
     await skipButton.click();
 
     /* Rolar até ao rodapé. */
-    await page.locator('footer#contactos').scrollIntoViewIfNeeded();
+    await page.locator('footer').scrollIntoViewIfNeeded();
 
     /* A barra fixa com Ligar + WhatsApp deve estar visível. */
     const stickyBar = page.locator('div.sticky.bottom-0');
@@ -52,7 +52,7 @@ test.describe('Verificação visual em telemóvel', () => {
     await expect(stickyBar.getByRole('link', { name: 'WhatsApp' })).toBeVisible();
 
     /* O rodapé deve estar visível (o CTA não o tapa completamente). */
-    const footer = page.locator('footer#contactos');
+    const footer = page.locator('footer');
     await expect(footer).toBeInViewport();
   });
 

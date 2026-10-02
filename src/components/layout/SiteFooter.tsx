@@ -42,13 +42,23 @@ function ChannelLink({ channel }: { readonly channel: ContactChannel }) {
   );
 }
 
+/* A âncora #contactos vive na secção de contacto (FinalCta); o rodapé é
+ * só informação. Links de navegação em forma /#… para funcionarem também a
+ * partir de /privacidade e /orcamento-enviado. */
+const footerNav = [
+  { href: '/#servicos', label: 'Serviços' },
+  { href: '/#trabalhos', label: 'Trabalhos' },
+  { href: '/#processo', label: 'Processo' },
+  { href: '/#contactos', label: 'Contactos' },
+] as const;
+
 export function SiteFooter() {
   return (
-    <footer id="contactos" className="on-dark bg-navy-900 py-(--spacing-section) text-mineral-50">
+    <footer className="on-dark bg-navy-900 py-(--spacing-section) text-mineral-50">
       <Container>
         <VisuallyHidden as="h2">Contactos e informação da empresa</VisuallyHidden>
 
-        <div className="grid gap-12 md:grid-cols-3">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Heading level={3} size="xl" className="text-mineral-50">
               {site.name}
@@ -62,6 +72,24 @@ export function SiteFooter() {
               <br />
               {postalAddress.addressRegion}, Portugal
             </address>
+          </div>
+
+          <div>
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-(--tracking-label) text-mineral-50/70">
+              Navegação
+            </h3>
+            <ul className="mt-4 space-y-1">
+              {footerNav.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className="inline-flex min-h-11 items-center text-mineral-50 underline underline-offset-4 hover:text-teal-500"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>

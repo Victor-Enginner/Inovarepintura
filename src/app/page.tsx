@@ -1,6 +1,14 @@
 import Image from 'next/image';
 import { CinematicIntro } from '@/components/cinematic/CinematicIntro';
 import { RealWorkGallery } from '@/components/gallery/RealWorkGallery';
+import { QuoteForm } from '@/components/contact/QuoteForm';
+import {
+  InstagramIcon,
+  MailIcon,
+  PhoneIcon,
+  PinIcon,
+  WhatsAppIcon,
+} from '@/components/contact/ChannelIcons';
 import { LinkButton } from '@/components/ui/Button';
 import {
   Container,
@@ -12,7 +20,9 @@ import {
 import {
   confirmedServiceArea,
   email,
+  instagram,
   phone,
+  postalAddress,
   processSteps,
   services,
   whatsapp,
@@ -274,26 +284,87 @@ function ServiceArea() {
 }
 
 function FinalCta() {
+  /* Secção de contacto (Sprint 4): canais diretos à esquerda, formulário de
+   * orçamento à direita. Mantém a copy aprovada de docs/04 e o `id` que a
+   * navegação usa como destino de "Contactos". */
   return (
-    <Section labelledBy="cta-titulo">
+    <Section id="contactos" labelledBy="cta-titulo" className="bg-surface-200/40">
       <Container>
-        <Heading level={2} size="3xl" id="cta-titulo" className="text-navy-900">
+        <Eyebrow>Contacto</Eyebrow>
+        <Heading level={2} size="3xl" id="cta-titulo" className="mt-4 text-navy-900">
           A sua casa merece um acabamento à altura.
         </Heading>
-        <Prose className="mt-6">
+        <Prose className="mt-6 max-w-2xl">
           Fale diretamente com a Inovare Pintura, explique o trabalho e combine a
           melhor forma de o avaliarmos.
         </Prose>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <LinkButton href={phone.href} data-analytics="cta_quote_click">
-            Pedir orçamento
-          </LinkButton>
-          <LinkButton href={whatsapp.href} variant="secondary" data-analytics={whatsapp.analyticsEvent}>
-            WhatsApp
-          </LinkButton>
-          <LinkButton href={email.href} variant="secondary" data-analytics={email.analyticsEvent}>
-            Enviar e-mail
-          </LinkButton>
+
+        <div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-12">
+          <div>
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-(--tracking-label) text-text-muted">
+              Contacto direto
+            </h3>
+            <ul className="mt-4 space-y-3">
+              <li>
+                <LinkButton href={phone.href} data-analytics="cta_quote_click">
+                  <PhoneIcon /> Ligar: {phone.label}
+                </LinkButton>
+              </li>
+              <li>
+                <LinkButton
+                  href={whatsapp.href}
+                  variant="secondary"
+                  data-analytics={whatsapp.analyticsEvent}
+                >
+                  <WhatsAppIcon /> WhatsApp
+                </LinkButton>
+              </li>
+              <li>
+                <LinkButton
+                  href={email.href}
+                  variant="secondary"
+                  data-analytics={email.analyticsEvent}
+                >
+                  <MailIcon /> Enviar e-mail
+                </LinkButton>
+              </li>
+            </ul>
+
+            <h3 className="mt-10 font-sans text-xs font-semibold uppercase tracking-(--tracking-label) text-text-muted">
+              Siga-nos
+            </h3>
+            {/* Só canais reais (§9): hoje, apenas o Instagram. Quando houver
+             * outro, entra aqui — nunca inventar. */}
+            <ul className="mt-4 flex flex-wrap gap-3">
+              <li>
+                <LinkButton
+                  href={instagram.href}
+                  variant="secondary"
+                  data-analytics={instagram.analyticsEvent}
+                  aria-label={`Ver no Instagram (${instagram.label})`}
+                >
+                  <InstagramIcon /> Ver no Instagram
+                </LinkButton>
+              </li>
+            </ul>
+
+            <p className="mt-10 flex items-start gap-2 text-sm text-text-muted">
+              <PinIcon />
+              <span>
+                {postalAddress.display} · Área de atuação:{' '}
+                {confirmedServiceArea.join(', ')}
+              </span>
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-(--tracking-label) text-text-muted">
+              Pedir orçamento
+            </h3>
+            <div className="mt-4">
+              <QuoteForm />
+            </div>
+          </div>
         </div>
       </Container>
     </Section>

@@ -66,5 +66,14 @@
     "body": "Fale diretamente com a Inovare Pintura, explique o trabalho e combine a melhor forma de o avaliarmos.",
     "primaryCta": "Pedir orçamento",
     "telephoneCta": "Ligar: +351 913 411 051"
+  },
+  "quoteForm": {
+    "fields": ["Nome", "Telefone", "Tipo de trabalho", "Mensagem (opcional)"],
+    "placeholders": ["O seu nome", "+351 …", "Escolha o mais próximo", "Conte-nos em poucas palavras o que precisa"],
+    "submit": "Pedir orçamento",
+    "sending": "A enviar…",
+    "privacyNotice": "Ao enviar, aceita ser contactado sobre este pedido. Nada de spam, nada de partilhas.",
+    "success": "Pedido recebido. Obrigado pelo contacto. Vamos ligar-lhe de volta assim que possível.",
+    "error": "Não conseguimos enviar agora. Tente de novo ou fale connosco diretamente."
   }
 }
