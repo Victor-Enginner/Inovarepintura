@@ -12,3 +12,5 @@ reduzido há um único ecrã com promessa e contactos. Botão pausa o vídeo;
 aba oculta pausa reprodução. Texto invisível também fica fora do foco.
 
 A pedido do cliente, remover halo radial e qualquer véu sobre a cena. Sombras apenas no texto. Marca, promessa e contactos também visíveis na abertura.
+
+Com movimento reduzido, o botão Reproduzir vídeo permite opt-in explícito, sem alterar preferências do dispositivo; contactos continuam visíveis e o percurso fica num só ecrã.

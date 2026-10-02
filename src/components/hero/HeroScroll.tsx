@@ -1,15 +1,28 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { phone } from '@/content/site';
 import { heroBeats } from '@/content/heroFrames';
 
 const REDUCED = '(prefers-reduced-motion: reduce)';
+const subscribeMotion = (notify: () => void) => {
+  const media = window.matchMedia(REDUCED);
+  media.addEventListener('change', notify);
+  return () => media.removeEventListener('change', notify);
+};
+const motionSnapshot = () => window.matchMedia(REDUCED).matches;
+const serverMotionSnapshot = () => false;
 
 export function HeroScroll() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [paused, setPaused] = useState(false);
+  const [manualPlayback, setManualPlayback] = useState(false);
+  const reduced = useSyncExternalStore(
+    subscribeMotion,
+    motionSnapshot,
+    serverMotionSnapshot,
+  );
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -17,7 +30,7 @@ export function HeroScroll() {
     if (!section || !video) return;
     const media = window.matchMedia(REDUCED);
     const syncPlayback = () => {
-      if (media.matches || paused || document.hidden) video.pause();
+      if ((media.matches && !manualPlayback) || paused || document.hidden) video.pause();
       else {
         if (!video.getAttribute('src')) {
           video.src = window.matchMedia('(max-width: 767px)').matches
@@ -37,7 +50,7 @@ export function HeroScroll() {
       media.removeEventListener('change', syncPlayback);
       document.removeEventListener('visibilitychange', syncPlayback);
     };
-  }, [paused]);
+  }, [paused, manualPlayback]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -128,7 +141,7 @@ export function HeroScroll() {
         <video
           ref={videoRef}
           data-hero-video
-          className="hero-frame hero-video"
+          className={`hero-frame hero-video${manualPlayback ? ' hero-video-opt-in' : ''}`}
           poster="/hero/inovare/renovation-poster.webp"
           autoPlay
           muted
@@ -178,10 +191,15 @@ export function HeroScroll() {
           <button
             type="button"
             className="hero-skip hero-pause"
-            onClick={() => setPaused((value) => !value)}
-            aria-pressed={paused}
+            onClick={() => {
+              if (reduced && !manualPlayback) {
+                setManualPlayback(true);
+                setPaused(false);
+              } else setPaused((value) => !value);
+            }}
+            aria-pressed={paused || (reduced && !manualPlayback)}
           >
-            {paused ? 'Reproduzir vídeo' : 'Pausar vídeo'}
+            {paused || (reduced && !manualPlayback) ? 'Reproduzir vídeo' : 'Pausar vídeo'}
           </button>
           <a
             href="#hero"

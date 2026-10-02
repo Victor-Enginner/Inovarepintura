@@ -544,3 +544,8 @@ e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.
 - Inspeção visual: screenshots 1440×900 e 390×844, vídeo a reproduzir e uma frase visível de cada vez. Emulação Chromium; iPhone físico não disponível.
 - Limitação visual: contraste sobre vídeo varia com o frame; remover a mancha foi preferência explícita. Sem alegação de medição AA de todos os frames.
 - Publicação: auto publishing de main confirmado na conta Netlify através do Chrome do utilizador; aguardando push/deploy.
+
+### Publicação e reprodução manual
+- Deploy 43b02de confirmado Published no Netlify, 02/10/2026, 07:34 (São Paulo).
+- Chrome real do utilizador anuncia prefers-reduced-motion: reduce. Acrescentada reprodução manual para este modo, mantendo o poster como estado inicial e a narrativa num único ecrã.
+- Reprodução manual validada: lint e build com tipos passaram; 14 testes do hero aprovados em desktop/mobile, incluindo reproduzir/pausar com movimento reduzido.

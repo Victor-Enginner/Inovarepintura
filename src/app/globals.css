@@ -347,8 +347,7 @@ html:not(.js) .hero-pause {
   display: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-video,
-  .hero-pause {
+  .hero-video {
     display: none;
   }
   .hero-reveal {
@@ -361,4 +360,10 @@ html:not(.js) .hero-pause {
   text-shadow:
     0 1px 3px rgb(0 0 0 / 0.85),
     0 2px 8px rgb(0 0 0 / 0.65);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-video-opt-in {
+    display: block;
+  }
 }

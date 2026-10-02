@@ -84,9 +84,7 @@ test.describe('Hero scrolltelling', () => {
     });
   });
 
-  test('o final da narrativa mostra o nome e o contacto', async ({
-    page,
-  }) => {
+  test('o final da narrativa mostra o nome e o contacto', async ({ page }) => {
     await page.goto('/');
 
     await scrollToProgress(page, 1);
@@ -121,9 +119,7 @@ test.describe('Hero scrolltelling', () => {
     expect(await page.evaluate(() => document.activeElement?.id)).toBe('hero');
   });
 
-  test('sem JavaScript fica o poster com nome e contacto', async ({
-    browser,
-  }) => {
+  test('sem JavaScript fica o poster com nome e contacto', async ({ browser }) => {
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();
     await page.goto('/');
@@ -165,6 +161,18 @@ test.describe('Hero scrolltelling', () => {
     expect(height).toBeLessThan(viewport * 1.2);
 
     await expect(page.locator('[data-hero-reveal]')).toBeVisible();
+    await page.getByRole('button', { name: 'Reproduzir vídeo' }).click();
+    await page.waitForFunction(() => {
+      const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+      return video && !video.paused && video.currentTime > 0;
+    });
+    await expect(page.locator('[data-hero-video]')).toBeVisible();
+    await page.getByRole('button', { name: 'Pausar vídeo' }).click();
+    expect(
+      await page
+        .locator('[data-hero-video]')
+        .evaluate((el: HTMLVideoElement) => el.paused),
+    ).toBe(true);
     await context.close();
   });
 });
