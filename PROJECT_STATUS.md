@@ -557,3 +557,9 @@ e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.
 - Em ecrã vertical, panorama acima da narrativa no mesmo hero sticky; apenas as frases acompanham o scroll. Cabeçalho integrado, título sans e controlos discretos. Contraste uniforme no vídeo, sem halo radial.
 - Windows do utilizador: Windows 10 Pro; Chrome reporta reduced motion. Orientado a ativar Mostrar animações no Windows; nenhuma configuração do sistema alterada. Reprodução manual continua disponível.
 - Verificação: npm run verify passou, 29 unitários e build; 16 testes de hero passaram. Teclado, axe e visual móvel repetidos em produção após um teste localizar também o rodapé do painel de desenvolvimento.
+
+### Hero estático temporário — 02/10/2026
+- Cliente rejeitou o vídeo e as bordas de contain; pediu imagem estática por enquanto.
+- Fundo único frame-05.webp (ilustrativo, já existente), cover com ponto focal móvel; sem vídeo ou controlos de reprodução, sem downloads MP4. Mantida narrativa apenas em texto e fallback de movimento reduzido.
+- A imagem preenche a área útil do navegador; monitor 1920×1080 não implica viewport 16:9 devido às barras do Chrome e Windows.
+- Validação: lint, tipos, 29 unitários e build passaram; 22 testes e2e aprovados, 6 skips de plataforma. Inspeção visual 1905×912 e 390×844 sem bordas.

@@ -519,3 +519,23 @@ body:has(.hero-scroll) .site-header a:focus-visible {
     font-size: 1.125rem;
   }
 }
+
+/* Temporary static hero: image fills every viewport without letterboxing. */
+.hero-frame {
+  object-fit: cover;
+  object-position: center;
+}
+@media (max-aspect-ratio: 4 / 5) {
+  .hero-media {
+    inset: 0;
+    width: 100%;
+    aspect-ratio: auto;
+  }
+  .hero-frame {
+    object-position: 64% center;
+  }
+  .hero-stage {
+    top: 120px;
+    bottom: 164px;
+  }
+}

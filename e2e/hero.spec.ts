@@ -44,18 +44,13 @@ test.describe('Hero scrolltelling', () => {
     expect(opacities).toEqual(['0', '0', '0']);
   });
 
-  test('vídeo continua em loop enquanto apenas as frases seguem o scroll', async ({
+  test('fundo permanece estático enquanto apenas as frases seguem o scroll', async ({
     page,
   }) => {
     await page.goto('/');
-    const video = page.locator('[data-hero-video]');
-    await expect(video).toHaveAttribute('loop', '');
-    await expect(video).toHaveAttribute('playsinline', '');
-    await page.waitForFunction(() => {
-      const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-      return video && video.currentTime > 0 && !video.paused;
-    });
-    const source = await video.getAttribute('src');
+    await expect(page.locator('video')).toHaveCount(0);
+    const base = page.locator('[data-hero-base]');
+    const source = await base.getAttribute('src');
     for (const progress of [0.28, 0.48, 0.68]) {
       await scrollToProgress(page, progress);
       const visible = await page
@@ -65,23 +60,8 @@ test.describe('Hero scrolltelling', () => {
             nodes.filter((node) => Number(getComputedStyle(node).opacity) > 0.9).length,
         );
       expect(visible).toBe(1);
-      await expect(video).toHaveAttribute('src', source!);
-      expect(await video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(false);
+      await expect(base).toHaveAttribute('src', source!);
     }
-    await page.getByRole('button', { name: 'Pausar vídeo' }).click();
-    expect(await video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
-    await page.getByRole('button', { name: 'Reproduzir vídeo' }).click();
-    await page.waitForFunction(
-      () => !document.querySelector<HTMLVideoElement>('[data-hero-video]')?.paused,
-    );
-    // Wait through a complete cycle to prove playback restarts.
-    await video.evaluate((el: HTMLVideoElement) => {
-      el.currentTime = el.duration - 0.3;
-    });
-    await page.waitForFunction(() => {
-      const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-      return video && !video.seeking && !video.paused && video.currentTime < 2;
-    });
   });
 
   test('o final da narrativa mostra o nome e o contacto', async ({ page }) => {
@@ -151,9 +131,9 @@ test.describe('Hero scrolltelling', () => {
     const base = page.locator('[data-hero-base]');
     await expect(base).toBeVisible();
     expect(await base.evaluate((img: HTMLImageElement) => img.currentSrc)).toContain(
-      'renovation-poster',
+      'frame-05',
     );
-    await expect(page.locator('[data-hero-video]')).not.toHaveAttribute('src');
+    await expect(page.locator('video')).toHaveCount(0);
 
     /* Um ecrã só, com o contacto à vista. */
     const height = await page.locator(SECTION).evaluate((el) => el.clientHeight);
@@ -161,35 +141,19 @@ test.describe('Hero scrolltelling', () => {
     expect(height).toBeLessThan(viewport * 1.2);
 
     await expect(page.locator('[data-hero-reveal]')).toBeVisible();
-    await page.getByRole('button', { name: 'Reproduzir vídeo' }).click();
-    await page.waitForFunction(() => {
-      const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-      return video && !video.paused && video.currentTime > 0;
-    });
-    await expect(page.locator('[data-hero-video]')).toBeVisible();
-    await page.getByRole('button', { name: 'Pausar vídeo' }).click();
-    expect(
-      await page
-        .locator('[data-hero-video]')
-        .evaluate((el: HTMLVideoElement) => el.paused),
-    ).toBe(true);
     await context.close();
   });
 });
 
-// The complete frame must remain visible on both portrait and landscape screens.
-test('vídeo conserva a proporção panorâmica sem zoom ou corte', async ({ page }) => {
-  await page.goto('/');
-  await page.waitForFunction(() => {
-    const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-    return video && video.videoWidth > 0;
+test('imagem preenche o hero sem bordas e sem descarregar vídeo', async ({ page }) => {
+  const videos: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().includes('.mp4')) videos.push(request.url());
   });
-  const video = page.locator('[data-hero-video]');
-  await expect(video).toHaveCSS('object-fit', 'contain');
-  const ratio = await video.evaluate(
-    (el: HTMLVideoElement) => el.videoWidth / el.videoHeight,
-  );
-  expect(ratio).toBeCloseTo(16 / 9, 2);
-  const box = await page.locator('.hero-media').boundingBox();
-  expect(box!.width).toBeLessThanOrEqual((page.viewportSize()?.width ?? 0) + 1);
+  await page.goto('/');
+  await expect(page.locator('[data-hero-base]')).toHaveCSS('object-fit', 'cover');
+  const media = await page.locator('.hero-media').boundingBox();
+  const sticky = await page.locator('.hero-sticky').boundingBox();
+  expect(media).toEqual(sticky);
+  expect(videos).toEqual([]);
 });

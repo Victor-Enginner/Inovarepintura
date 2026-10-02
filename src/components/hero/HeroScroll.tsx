@@ -1,57 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { phone } from '@/content/site';
 import { heroBeats } from '@/content/heroFrames';
 
 const REDUCED = '(prefers-reduced-motion: reduce)';
-const subscribeMotion = (notify: () => void) => {
-  const media = window.matchMedia(REDUCED);
-  media.addEventListener('change', notify);
-  return () => media.removeEventListener('change', notify);
-};
-const motionSnapshot = () => window.matchMedia(REDUCED).matches;
-const serverMotionSnapshot = () => false;
-
 export function HeroScroll() {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [paused, setPaused] = useState(false);
-  const [manualPlayback, setManualPlayback] = useState(false);
-  const reduced = useSyncExternalStore(
-    subscribeMotion,
-    motionSnapshot,
-    serverMotionSnapshot,
-  );
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const video = videoRef.current;
-    if (!section || !video) return;
-    const media = window.matchMedia(REDUCED);
-    const syncPlayback = () => {
-      if ((media.matches && !manualPlayback) || paused || document.hidden) video.pause();
-      else {
-        if (!video.getAttribute('src')) {
-          video.src = window.matchMedia('(max-width: 767px)').matches
-            ? '/hero/inovare/renovation-mobile.mp4'
-            : '/hero/inovare/renovation-desktop.mp4';
-        }
-        void video.play().catch(() => {
-          /* Poster remains visible if autoplay is unavailable. */
-        });
-      }
-    };
-    syncPlayback();
-    media.addEventListener('change', syncPlayback);
-    document.addEventListener('visibilitychange', syncPlayback);
-    return () => {
-      video.pause();
-      media.removeEventListener('change', syncPlayback);
-      document.removeEventListener('visibilitychange', syncPlayback);
-    };
-  }, [paused, manualPlayback]);
-
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -76,7 +31,7 @@ export function HeroScroll() {
         section.offsetHeight - (sticky?.offsetHeight ?? window.innerHeight),
       );
       const progress = clamp(-section.getBoundingClientRect().top / distance);
-      // The video follows its own clock; scroll only changes HTML text.
+      // The background stays fixed; scroll only changes HTML text.
       beats.forEach((node) => {
         const start = Number(node.dataset['heroBeat']);
         const end = Number(node.dataset['heroBeatEnd']);
@@ -128,28 +83,16 @@ export function HeroScroll() {
     >
       <div className="hero-sticky sticky top-0 h-svh overflow-hidden bg-navy-900">
         <div className="hero-media">
-          {/* Poster is also the no-JS, failed-autoplay and reduced-motion fallback. */}
+          {/* Static illustrative background, independent of the narrative. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             data-hero-base
-            src="/hero/inovare/renovation-poster.webp"
+            src="/hero/inovare/frame-05.webp"
             width={1920}
             height={1080}
             alt="Cena ilustrativa da renovação de uma moradia."
             fetchPriority="high"
             className="hero-frame"
-          />
-          <video
-            ref={videoRef}
-            data-hero-video
-            className={`hero-frame hero-video${manualPlayback ? ' hero-video-opt-in' : ''}`}
-            poster="/hero/inovare/renovation-poster.webp"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            aria-hidden="true"
           />
         </div>
         <div className="hero-stage">
@@ -193,19 +136,6 @@ export function HeroScroll() {
           <div className="hero-progress" role="presentation" aria-hidden="true">
             <div data-hero-bar className="hero-progress-bar" />
           </div>
-          <button
-            type="button"
-            className="hero-skip hero-pause"
-            onClick={() => {
-              if (reduced && !manualPlayback) {
-                setManualPlayback(true);
-                setPaused(false);
-              } else setPaused((value) => !value);
-            }}
-            aria-pressed={paused || (reduced && !manualPlayback)}
-          >
-            {paused || (reduced && !manualPlayback) ? 'Reproduzir vídeo' : 'Pausar vídeo'}
-          </button>
           <a
             href="#hero"
             onClick={skip}

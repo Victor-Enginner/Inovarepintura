@@ -4,11 +4,9 @@ import { test, expect } from '@playwright/test';
 test.describe('Verificação visual em telemóvel', () => {
   test.skip(({ isMobile }) => !isMobile, 'Só corre em mobile');
 
-  test('hero usa variantes móveis e não pede ficheiros de desktop', async ({ page }) => {
+  test('hero mostra imagem estática sem vídeo', async ({ page }) => {
     await page.goto('/');
 
-    /* Em ecrã estreito o `cover` corta a largura: é o `srcset` que tem de
-     * escolher a variante móvel, nunca a de 1672px. */
     await page.waitForFunction(() => {
       const section = document.querySelector('section[aria-label*="transformação"]');
       return section?.querySelector('img[data-hero-base]') !== null;
@@ -17,11 +15,8 @@ test.describe('Verificação visual em telemóvel', () => {
     const base = page.locator('[data-hero-base]');
     await expect(base).toBeVisible();
     const src = await base.evaluate((img: HTMLImageElement) => img.currentSrc);
-    expect(src).toContain('/hero/inovare/renovation-poster');
-    await expect(page.locator('[data-hero-video]')).toHaveAttribute(
-      'src',
-      '/hero/inovare/renovation-mobile.mp4',
-    );
+    expect(src).toContain('/hero/inovare/frame-05');
+    await expect(page.locator('video')).toHaveCount(0);
     expect(src).not.toMatch(/frame-01\.webp$/);
   });
 
