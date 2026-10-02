@@ -1,9 +1,10 @@
 import { test } from '@playwright/test';
 import { injectAxe, configureAxe, checkA11y } from 'axe-playwright';
 
-/* O texto do hero vive sobre fotografia. O axe não compõe gradientes com
- * imagens de fundo, por isso mede o branco contra a cor da página e acusa um
- * contraste que não existe — logo depois de se medir 17:1 no ecrã real.
+/* O texto do hero vive sobre fotografia. O axe não compõe um halo radial com
+ * a imagem que está por baixo, por isso mede o branco contra a cor da página e
+ * acusa um contraste que não existe — logo depois de se medir mais de 5:1 no
+ * ecrã real.
  *
  * A regra fica desligada só para esse contentor, e o mesmo contraste é
  * verificado a partir dos píxeis realmente renderizados em `hero.spec.ts`.
@@ -11,7 +12,7 @@ import { injectAxe, configureAxe, checkA11y } from 'axe-playwright';
  * atrás das letras, no viewport real, em vez de o inferir da folha de
  * estilos. O resto da página continua sob a regra completa. */
 const HERO_COPY_CONTRAST = [
-  { id: 'color-contrast', selector: '.hero-copy', enabled: false },
+  { id: 'color-contrast', selector: '.hero-stage', enabled: false },
 ];
 
 test.describe('Acessibilidade (axe)', () => {

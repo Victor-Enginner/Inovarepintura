@@ -485,3 +485,24 @@ frames mestres aprovados, e fechar o canal de orçamento em produção.
 
 **Verificações:** lint ✓ · typecheck ✓ · 29/29 unitários ✓ · build ✓ ·
 e2e 52 ✓ / 0 ✗ · axe sem violações em desktop e telemóvel.
+
+**Ajuste seguinte — reveal final também ao centro**
+- A marca, o h1, o CTA e o telefone estavam ancorados à base e à esquerda.
+  Passaram para o mesmo palco centrado das frases (`.hero-stage`), pela mesma
+  razão: `inset: 0` + flex, sem `bottom`, `left` nem `translate` em píxeis.
+- O véu em gradiente da base foi **removido**: existia para proteger texto
+  ancorado ao canto. Com o texto centrado, escurecer a base só tirava luz à
+  casa. O que protege agora é o halo radial, como nas frases.
+- O halo do reveal é um elemento separado, com a sua própria curva: o das
+  frases apaga-se em 78% e o reveal só nasce em 84%. Com um halo só havia 6%
+  do percurso com texto sobre a fotografia e nada por trás. Sobe 0,03 antes da
+  letra, para não haver um instante com texto sem nada atrás.
+- Medido: desvio **0 px** em 1920×1080, 1440×900 e 390×844. Contraste pior
+  caso 5,6:1 / 5,5:1 / 10,4:1 — todos acima de AA.
+
+**Bug apanhado pelos testes ao fazer isto**
+- O palco cobre o ecrã inteiro e passou a interceptar o clique no
+  "Saltar introdução". Corrigido com `pointer-events: none` no palco e
+  `auto` nos próprios links, para o CTA continuar clicável. Teria passado
+  despercebido: o link é pequeno e está no canto, e nada na consola denuncia
+  um clique bloqueado.

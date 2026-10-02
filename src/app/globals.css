@@ -189,61 +189,51 @@
   opacity: 0;
 }
 
-/* Véu. Medido nas fotografias — a faixa inferior tem luminância 100–118 e a
- * faixa central 158–170. Texto branco sobre a zona central reprova o
- * contraste AA, por isso o texto vive na faixa baixa.
- *
- * O gradiente está no próprio contentor do texto, não numa camada por cima.
- * A diferença não é cosmética: com uma camada por cima, não existe nenhuma
- * cor pintada por trás do texto e o verificador automático de acessibilidade
- * só consegue compará-la com o fundo da página — claro — e accuses um
- * contraste que não existe. Com o fundo no próprio elemento, a medição é
- * feita sobre o que está mesmo atrás das letras. */
-.hero-copy {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  padding-inline: var(--spacing-gutter);
-  padding-bottom: clamp(3rem, 10vh, 5.5rem);
-  color: var(--color-text-inverse);
-  background-image: linear-gradient(
-    to top,
-    rgb(6 35 74 / 0.94) 0%,
-    rgb(6 35 74 / 0.88) 30%,
-    rgb(6 35 74 / 0.6) 62%,
-    rgb(6 35 74 / 0) 100%
-  );
-}
+/* O texto do hero vive ao centro, sobre a fotografia, protegido pelo halo
+ * radial de `.hero-halo`. O véu em gradiente que existia aqui já não: era uma
+ * faixa escura na base do ecrã, feita para o texto que esteve ancorado ao
+ * canto inferior esquerdo. Com o texto centrado, escurecer a base só tirava
+ * luz à casa sem proteger nada. */
 
-/* Narrativa do percurso, ao centro do ecrã.
+/* Palco de texto: frases do percurso e reveal final, ambos ao centro.
  *
  * O alinhamento é do contentor (`inset: 0` + flex centrado), não um `bottom`
- * ou um `translate` em píxeis: é assim que a frase continua centrada quando
+ * ou um `translate` em píxeis: é assim que o texto continua centrado quando
  * a altura da janela muda — barras do browser que entram e saem, ecrã
- * dobrado, rotação. `pointer-events: none` para não roubar o clique ao
- * conteúdo que está por baixo. */
-.hero-story {
+ * dobrado, rotação.
+ *
+ * `pointer-events: none` não pode ser posto aqui: o CTA do reveal final tem
+ * de ser clicável. Quem o não tem é o halo. */
+.hero-stage {
   position: absolute;
   inset: 0;
   z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* O palco cobre o ecrã inteiro, por isso capturaria o clique de tudo o que
+   * estiver por baixo — incluindo o "Saltar introdução". Só os elementos
+   * realmente clicáveis é que o voltam a aceitar. */
   pointer-events: none;
 }
 
-/* Halo atrás da frase. Radial e a desaparecer: escurece o que está por trás
+.hero-stage a {
+  pointer-events: auto;
+}
+
+/* Halo atrás do texto. Radial e a desaparecer: escurece o que está por trás
  * das letras sem pôr uma caixa à volta do texto nem tapar a casa.
  *
  * A intensidade é diferente por largura, e não por acaso: em ecrã estreito
  * o `object-position` a 32% mostra a faixa mais clara da fotografia (a
- * fachada, luminância 196–206), onde o branco branco dá 2,0:1. Em desktop
- * a fotografia atrás da frase é bem mais escura e 0,62 já dá mais de 9:1.
- * Com o mesmo valor nos dois, ou o desktop escurecia a casa a mais, ou o
- * telemóvel ficava abaixo de AA. Medido em ecrã real, não estimado. */
-.hero-story-halo {
+ * fachada, luminância 196–206), onde o branco dá 2,0:1. Em desktop a
+ * fotografia atrás do texto é bem mais escura. Com o mesmo valor nos dois,
+ * ou o desktop escurecia a casa a mais, ou o telemóvel ficava abaixo de AA.
+ * Medido em ecrã real, não estimado. */
+.hero-halo {
   position: absolute;
   inset: 0;
+  pointer-events: none;
   background-image: radial-gradient(
     ellipse 80% 44% at 50% 50%,
     rgb(3 28 58 / 0.62) 0%,
@@ -254,7 +244,7 @@
 }
 
 @media (max-width: 767px) {
-  .hero-story-halo {
+  .hero-halo {
     background-image: radial-gradient(
       ellipse 80% 44% at 50% 50%,
       rgb(3 28 58 / 0.85) 0%,
@@ -288,12 +278,17 @@
   }
 }
 
+/* Reveal final: também ao centro, pela mesma razão que as frases. */
 .hero-reveal {
-  max-width: 60ch;
+  position: absolute;
+  max-width: min(900px, 100%);
+  padding-inline: 32px;
+  color: var(--color-text-inverse);
+  text-align: center;
 }
 
 .hero-brand {
-  margin: 0 0 0.75rem;
+  margin: 0 0 1rem;
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 700;
@@ -304,17 +299,27 @@
 .hero-headline {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5.4vw, 3.75rem);
+  font-size: clamp(2rem, 5.4vw, 4rem);
   line-height: 1.05;
   text-wrap: balance;
+  text-shadow:
+    0 2px 20px rgb(0 0 0 / 0.35),
+    0 1px 4px rgb(0 0 0 / 0.25);
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem 1.5rem;
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
+}
+
+@media (max-width: 640px) {
+  .hero-reveal {
+    padding-inline: 24px;
+  }
 }
 
 .hero-cta {
@@ -393,14 +398,21 @@
 /* Sem JavaScript não há progresso nem frases: o hero é o estado inicial da
  * casa com o nome e o contacto já à vista. É o que se vê também com
  * movimento reduzido. */
-.hero-story {
+/* O palco está sempre visível: sem JavaScript e com movimento reduzido, o
+ * estado é a casa final com o nome e o contacto. Só as frases do percurso
+ * dependem do scrub e por isso é só essas que se escondem.
+ *
+ * Sem isto, sem JavaScript o hero ficava sem nome e sem telefone — que era
+ * precisamente o canal de conversão. */
+.hero-beat {
   display: none;
 }
 
-.js .hero-story {
-  display: flex;
+.js .hero-beat {
+  display: block;
 }
 
+/* Com JavaScript, o reveal só aparece quando a timeline o revela. */
 .js .hero-reveal {
   opacity: 0;
 }
@@ -414,7 +426,11 @@
     opacity: 1;
   }
 
-  .hero-story {
-    display: none !important;
+  .hero-halo {
+    opacity: 1;
+  }
+
+  .hero-beat {
+    display: none;
   }
 }
